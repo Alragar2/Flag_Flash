@@ -1,0 +1,1346 @@
+[
+    {
+        "id": 0,
+        "nombre":"Andorra",
+        "capital":"Andorra la Vella",
+        "bandera":"bandera_de_andorra",
+        "continente":"Europa"
+    },
+    {
+        "id": 1,
+        "nombre":"Austria",
+        "capital":"Viena",
+        "bandera":"bandera_de_austria",
+        "continente":"Europa"
+    },
+    {
+        "id": 2,
+        "nombre":"Bélgica",
+        "capital":"Bruselas",
+        "bandera":"bandera_de_belgica",
+        "continente":"Europa"
+    },
+    {
+        "id": 3,
+        "nombre":"Bielorrusia",
+        "capital":"Minsk",
+        "bandera":"bandera_de_bielorrusia",
+        "continente":"Europa"
+    },
+    {
+        "id": 4,
+        "nombre":"Bosnia",
+        "capital":"Sarajevo",
+        "bandera":"bandera_de_bosnia_herzegovina",
+        "continente":"Europa"
+    },
+    {
+        "id": 5,
+        "nombre":"Bulgaria",
+        "capital":"Sofía",
+        "bandera":"bandera_de_bulgaria",
+        "continente":"Europa"
+    },
+    {
+        "id": 6,
+        "nombre":"Croacia",
+        "capital":"Zagrev",
+        "bandera":"bandera_de_croacia",
+        "continente":"Europa"
+    },
+    {
+        "id": 7,
+        "nombre":"Dinamarca",
+        "capital":"Copenhague",
+        "bandera":"bandera_de_dinamarca",
+        "continente":"Europa"
+    },
+    {
+        "id": 8,
+        "nombre":"Eslovaquia",
+        "capital":"Bratislava",
+        "bandera":"bandera_de_eslovaquia",
+        "continente":"Europa"
+    },
+    {
+        "id": 9,
+        "nombre":"Eslovenia",
+        "capital":"Liubliana",
+        "bandera":"bandera_de_eslovenia",
+        "continente":"Europa"
+    },
+    {
+        "id": 10,
+        "nombre":"España",
+        "capital":"Madrid",
+        "bandera":"bandera_de_espana",
+        "continente":"Europa"
+    },
+    {
+        "id": 11,
+        "nombre":"Estonia",
+        "capital":"Tallín",
+        "bandera":"bandera_de_estonia",
+        "continente":"Europa"
+    },
+    {
+        "id": 12,
+        "nombre":"Finlandia",
+        "capital":"Helsinki",
+        "bandera":"bandera_de_finlandia",
+        "continente":"Europa"
+    },
+    {
+        "id": 13,
+        "nombre":"Francia",
+        "capital":"París",
+        "bandera":"bandera_de_francia",
+        "continente":"Europa"
+    },
+    {
+        "id": 14,
+        "nombre":"Grecia",
+        "capital":"Atenas",
+        "bandera":"bandera_de_grecia",
+        "continente":"Europa"
+    },
+    {
+        "id": 15,
+        "nombre":"Hungría",
+        "capital":"Budapest",
+        "bandera":"bandera_de_hungria",
+        "continente":"Europa"
+    },
+    {
+        "id": 16,
+        "nombre":"Irlanda",
+        "capital":"Dublín",
+        "bandera":"bandera_de_irlanda",
+        "continente":"Europa"
+    },
+    {
+        "id": 17,
+        "nombre":"Islandia",
+        "capital":"Reikiavik",
+        "bandera":"bandera_de_islandia",
+        "continente":"Europa"
+    },
+    {
+        "id": 18,
+        "nombre":"Italia",
+        "capital":"Roma",
+        "bandera":"bandera_de_italia",
+        "continente":"Europa"
+    },
+    {
+        "id": 19,
+        "nombre":"Letonia",
+        "capital":"Riga",
+        "bandera":"bandera_de_letonia",
+        "continente":"Europa"
+    },
+    {
+        "id": 20,
+        "nombre":"Liechtenstein",
+        "capital":"Vadúz",
+        "bandera":"bandera_de_liechtenstein",
+        "continente":"Europa"
+    },
+    {
+        "id": 21,
+        "nombre":"Lituania",
+        "capital":"Vilna",
+        "bandera":"bandera_de_lituania",
+        "continente":"Europa"
+    },
+    {
+        "id": 22,
+        "nombre":"Luxemburgo",
+        "capital":"Luxemburgo",
+        "bandera":"bandera_de_luxemburgo",
+        "continente":"Europa"
+    },
+    {
+        "id": 23,
+        "nombre":"Macedonia",
+        "capital":"Skopje",
+        "bandera":"bandera_de_macedonia",
+        "continente":"Europa"
+    },
+    {
+        "id": 24,
+        "nombre":"Malta",
+        "capital":"La Valeta",
+        "bandera":"bandera_de_malta",
+        "continente":"Europa"
+    },
+    {
+        "id": 25,
+        "nombre":"Moldavia",
+        "capital":"Chisináu",
+        "bandera":"bandera_de_moldavia",
+        "continente":"Europa"
+    },
+    {
+        "id": 26,
+        "nombre":"Mónaco",
+        "capital":"Mónaco",
+        "bandera":"bandera_de_monaco",
+        "continente":"Europa"
+    },
+    {
+        "id": 27,
+        "nombre":"Montenegro",
+        "capital":"Podgorica",
+        "bandera":"bandera_de_montenegro",
+        "continente":"Europa"
+    },
+    {
+        "id": 28,
+        "nombre":"Noruega",
+        "capital":"Oslo",
+        "bandera":"bandera_de_noruega",
+        "continente":"Europa"
+    },
+    {
+        "id": 29,
+        "nombre":"Países Bajos",
+        "capital":"Amsterdam",
+        "bandera":"bandera_de_paises_bajos",
+        "continente":"Europa"
+    },
+    {
+        "id": 30,
+        "nombre":"Polonia",
+        "capital":"Varsovia",
+        "bandera":"bandera_de_polonia",
+        "continente":"Europa"
+    },
+    {
+        "id": 31,
+        "nombre":"Portugal",
+        "capital":"Lisboa",
+        "bandera":"bandera_de_portugal",
+        "continente":"Europa"
+    },
+    {
+        "id": 32,
+        "nombre":"Reino Unido",
+        "capital":"Londres",
+        "bandera":"bandera_de_reino_unido",
+        "continente":"Europa"
+    },
+    {
+        "id": 33,
+        "nombre":"Chequia",
+        "capital":"Praga",
+        "bandera":"bandera_de_republica_checa",
+        "continente":"Europa"
+    },
+    {
+        "id": 34,
+        "nombre":"Rumanía",
+        "capital":"Bucarest",
+        "bandera":"bandera_de_rumania",
+        "continente":"Europa"
+    },
+    {
+        "id": 35,
+        "nombre":"San Marino",
+        "capital":"San Marino",
+        "bandera":"bandera_de_san_marino",
+        "continente":"Europa"
+    },
+    {
+        "id": 36,
+        "nombre":"Serbia",
+        "capital":"Belgrado",
+        "bandera":"bandera_de_serbia",
+        "continente":"Europa"
+    },
+    {
+        "id": 37,
+        "nombre":"Suecia",
+        "capital":"Estocolmo",
+        "bandera":"bandera_de_suecia",
+        "continente":"Europa"
+    },
+    {
+        "id": 38,
+        "nombre":"Suiza",
+        "capital":"Berna",
+        "bandera":"bandera_de_suiza",
+        "continente":"Europa"
+    },
+    {
+        "id": 39,
+        "nombre":"Vaticano",
+        "capital":"Ciudad del Vaticano",
+        "bandera":"bandera_de_vaticano",
+        "continente":"Europa"
+    },
+    {
+        "id": 40,
+        "nombre":"Alemania",
+        "capital":"Berlín",
+        "bandera":"bandera_de_alemania",
+        "continente":"Europa"
+    },
+    {
+        "id": 41,
+        "nombre":"Antigua y Barbuda",
+        "capital":"Saint John's",
+        "bandera":"bandera_de_antigua_barbuda",
+        "continente":"América"
+    },
+    {
+        "id": 42,
+        "nombre":"Argentina",
+        "capital":"Buenos Aires",
+        "bandera":"bandera_de_argentina",
+        "continente":"América"
+    },
+    {
+        "id": 43,
+        "nombre":"Bahamas",
+        "capital":"Nasáu",
+        "bandera":"bandera_de_bahamas",
+        "continente":"América"
+    },
+    {
+        "id": 44,
+        "nombre":"Barbados",
+        "capital":"Bridgetown",
+        "bandera":"bandera_de_barbados",
+        "continente":"América"
+    },
+    {
+        "id": 45,
+        "nombre":"Belice",
+        "capital":"Belmopán",
+        "bandera":"bandera_de_belice",
+        "continente":"América"
+    },
+    {
+        "id": 46,
+        "nombre":"Bolivia",
+        "capital":"Sucre",
+        "bandera":"bandera_de_bolivia",
+        "continente":"América"
+    },
+    {
+        "id": 47,
+        "nombre":"Brasil",
+        "capital":"Brasilia",
+        "bandera":"bandera_de_brasil",
+        "continente":"América"
+    },
+    {
+        "id": 48,
+        "nombre":"Canadá",
+        "capital":"Ottawa",
+        "bandera":"bandera_de_canada",
+        "continente":"América"
+    },
+    {
+        "id": 49,
+        "nombre":"Chile",
+        "capital":"Santiago",
+        "bandera":"bandera_de_chile",
+        "continente":"América"
+    },
+    {
+        "id": 50,
+        "nombre":"Colombia",
+        "capital":"Bogotá",
+        "bandera":"bandera_de_colombia",
+        "continente":"América"
+    },
+    {
+        "id": 51,
+        "nombre":"Costa Rica",
+        "capital":"San José",
+        "bandera":"bandera_de_costa_rica",
+        "continente":"América"
+    },
+    {
+        "id": 52,
+        "nombre":"Cuba",
+        "capital":"La Habana",
+        "bandera":"bandera_de_cuba",
+        "continente":"América"
+    },
+    {
+        "id": 53,
+        "nombre":"Dominica",
+        "capital":"Roseau",
+        "bandera":"bandera_de_dominica",
+        "continente":"América"
+    },
+    {
+        "id": 54,
+        "nombre":"Ecuador",
+        "capital":"Quito",
+        "bandera":"bandera_de_ecuador",
+        "continente":"América"
+    },
+    {
+        "id": 55,
+        "nombre":"El Salvador",
+        "capital":"San Salvador",
+        "bandera":"bandera_de_el_salvador",
+        "continente":"América"
+    },
+    {
+        "id": 56,
+        "nombre":"Estados Unidos",
+        "capital":"Washington D.C.",
+        "bandera":"bandera_de_estados_unidos",
+        "continente":"América"
+    },
+    {
+        "id": 57,
+        "nombre":"Granada",
+        "capital":"Saint George's",
+        "bandera":"bandera_de_granada",
+        "continente":"América"
+    },
+    {
+        "id": 58,
+        "nombre":"Guatemala",
+        "capital":"Ciudad de Guatemala",
+        "bandera":"bandera_de_guatemala",
+        "continente":"América"
+    },
+    {
+        "id": 59,
+        "nombre":"Guyana",
+        "capital":"Georgetown",
+        "bandera":"bandera_de_guyana",
+        "continente":"América"
+    },
+    {
+        "id": 60,
+        "nombre":"Haití",
+        "capital":"Puerto Príncipe",
+        "bandera":"bandera_de_haiti",
+        "continente":"América"
+    },
+    {
+        "id": 61,
+        "nombre":"Honduras",
+        "capital":"Tegucigalpa",
+        "bandera":"bandera_de_honduras",
+        "continente":"América"
+    },
+    {
+        "id": 62,
+        "nombre":"Jamaica",
+        "capital":"Kingston",
+        "bandera":"bandera_de_jamaica",
+        "continente":"América"
+    },
+    {
+        "id": 63,
+        "nombre":"México",
+        "capital":"Ciudad de México",
+        "bandera":"bandera_de_mexico",
+        "continente":"América"
+    },
+    {
+        "id": 64,
+        "nombre":"Nicaragua",
+        "capital":"Managua",
+        "bandera":"bandera_de_nicaragua",
+        "continente":"América"
+    },
+    {
+        "id": 65,
+        "nombre":"Panamá",
+        "capital":"Ciudad de Panamá",
+        "bandera":"bandera_de_panama",
+        "continente":"América"
+    },
+    {
+        "id": 66,
+        "nombre":"Paraguay",
+        "capital":"Asunción",
+        "bandera":"bandera_de_paraguay",
+        "continente":"América"
+    },
+    {
+        "id": 67,
+        "nombre":"Perú",
+        "capital":"Lima",
+        "bandera":"bandera_de_peru",
+        "continente":"América"
+    },
+    {
+        "id": 68,
+        "nombre":"República Dominicana",
+        "capital":"Santo Domingo",
+        "bandera":"bandera_de_republica_dominicana",
+        "continente":"América"
+    },
+    {
+        "id": 69,
+        "nombre":"San Cristóbal y Nieves",
+        "capital":"Basseterre",
+        "bandera":"bandera_de_san_cristobal_nieves",
+        "continente":"América"
+    },
+    {
+        "id": 70,
+        "nombre":"San Vicente y las Granadinas",
+        "capital":"Kingstown",
+        "bandera":"bandera_de_san_vicente_las_granadinas",
+        "continente":"América"
+    },
+    {
+        "id": 71,
+        "nombre":"Santa Lucía",
+        "capital":"Castries",
+        "bandera":"bandera_de_santa_lucia",
+        "continente":"América"
+    },
+    {
+        "id": 72,
+        "nombre":"Surinam",
+        "capital":"Paramaribo",
+        "bandera":"bandera_de_surinam",
+        "continente":"América"
+    },
+    {
+        "id": 73,
+        "nombre":"Trinidad y Tobago",
+        "capital":"Puerto España",
+        "bandera":"bandera_de_trinidad_tobago",
+        "continente":"América"
+    },
+    {
+        "id": 74,
+        "nombre":"Uruguay",
+        "capital":"Montevideo",
+        "bandera":"bandera_de_uruguay",
+        "continente":"América"
+    },
+    {
+        "id": 75,
+        "nombre":"Venezuela",
+        "capital":"Caracas",
+        "bandera":"bandera_de_venezuela",
+        "continente":"América"
+    },
+    {
+        "id": 76,
+        "nombre":"Afganistán",
+        "capital":"Kabul",
+        "bandera":"bandera_de_afganistan",
+        "continente":"Asia"
+    },
+    {
+        "id": 77,
+        "nombre":"Arabia Saudita",
+        "capital":"Riad",
+        "bandera":"bandera_de_arabia_saudita",
+        "continente":"Asia"
+    },
+    {
+        "id": 78,
+        "nombre":"Armenia",
+        "capital":"Ereván",
+        "bandera":"bandera_de_armenia",
+        "continente":"Asia"
+    },
+    {
+        "id": 79,
+        "nombre":"Azerbaiyán",
+        "capital":"Bakú",
+        "bandera":"bandera_de_azerbaiyan",
+        "continente":"Asia"
+    },
+    {
+        "id": 80,
+        "nombre":"Bangladés",
+        "capital":"Daca",
+        "bandera":"bandera_de_bangladesh",
+        "continente":"Asia"
+    },
+    {
+        "id": 81,
+        "nombre":"Baréin",
+        "capital":"Manama",
+        "bandera":"bandera_de_barein",
+        "continente":"Asia"
+    },
+    {
+        "id": 82,
+        "nombre":"Birmania",
+        "capital":"Naipyidó",
+        "bandera":"bandera_de_birmania",
+        "continente":"Asia"
+    },
+    {
+        "id": 83,
+        "nombre":"Brunéi",
+        "capital":"Bandar Seri Begawan",
+        "bandera":"bandera_de_brunei",
+        "continente":"Asia"
+    },
+    {
+        "id": 84,
+        "nombre":"Bután",
+        "capital":"Timbu",
+        "bandera":"bandera_de_butan",
+        "continente":"Asia"
+    },
+    {
+        "id": 85,
+        "nombre":"Camboya",
+        "capital":"Nom Pen",
+        "bandera":"bandera_de_camboya",
+        "continente":"Asia"
+    },
+    {
+        "id": 86,
+        "nombre":"Catar",
+        "capital":"Doha",
+        "bandera":"bandera_de_catar",
+        "continente":"Asia"
+    },
+    {
+        "id": 87,
+        "nombre":"China",
+        "capital":"Pekín",
+        "bandera":"bandera_de_china",
+        "continente":"Asia"
+    },
+    {
+        "id": 88,
+        "nombre":"Chipre",
+        "capital":"Nicosia",
+        "bandera":"bandera_de_chipre",
+        "continente":"Asia"
+    },
+    {
+        "id": 89,
+        "nombre":"Corea del Norte",
+        "capital":"Pionyang",
+        "bandera":"bandera_de_corea_del_norte",
+        "continente":"Asia"
+    },
+    {
+        "id": 90,
+        "nombre":"Corea del Sur",
+        "capital":"Seúl",
+        "bandera":"bandera_de_corea_del_sur",
+        "continente":"Asia"
+    },
+    {
+        "id": 91,
+        "nombre":"Emiratos Árabes Unidos",
+        "capital":"Abu Dabi",
+        "bandera":"bandera_de_emiratos_arabes",
+        "continente":"Asia"
+    },
+    {
+        "id": 92,
+        "nombre":"Filipinas",
+        "capital":"Manila",
+        "bandera":"bandera_de_filipinas",
+        "continente":"Asia"
+    },
+    {
+        "id": 93,
+        "nombre":"Georgia",
+        "capital":"Tiflis",
+        "bandera":"bandera_de_georgia",
+        "continente":"Asia"
+    },
+    {
+        "id": 94,
+        "nombre":"India",
+        "capital":"Nueva Delhi",
+        "bandera":"bandera_de_india",
+        "continente":"Asia"
+    },
+    {
+        "id": 95,
+        "nombre":"Indonesia",
+        "capital":"Yakarta",
+        "bandera":"bandera_de_indonesia",
+        "continente":"Asia"
+    },
+    {
+        "id": 96,
+        "nombre":"Irak",
+        "capital":"Bagdad",
+        "bandera":"bandera_de_irak",
+        "continente":"Asia"
+    },
+    {
+        "id": 97,
+        "nombre":"Irán",
+        "capital":"Teherán",
+        "bandera":"bandera_de_iran",
+        "continente":"Asia"
+    },
+    {
+        "id": 98,
+        "nombre":"Israel",
+        "capital":"Jerusalén",
+        "bandera":"bandera_de_israel",
+        "continente":"Asia"
+    },
+    {
+        "id": 99,
+        "nombre":"Japón",
+        "capital":"Tokio",
+        "bandera":"bandera_de_japon",
+        "continente":"Asia"
+    },
+    {
+        "id": 100,
+        "nombre":"Jordania",
+        "capital":"Amán",
+        "bandera":"bandera_de_jordania",
+        "continente":"Asia"
+    },
+    {
+        "id": 101,
+        "nombre":"Kazajistán",
+        "capital":"Nur-Sultán",
+        "bandera":"bandera_de_kazajistan",
+        "continente":"Asia"
+    },
+    {
+        "id": 102,
+        "nombre":"Kirguistán",
+        "capital":"Biskek",
+        "bandera":"bandera_de_kirguistan",
+        "continente":"Asia"
+    },
+    {
+        "id": 103,
+        "nombre":"Kuwait",
+        "capital":"Kuwait",
+        "bandera":"bandera_de_kuwait",
+        "continente":"Asia"
+    },
+    {
+        "id": 104,
+        "nombre":"Laos",
+        "capital":"Vientián",
+        "bandera":"bandera_de_laos",
+        "continente":"Asia"
+    },
+    {
+        "id": 105,
+        "nombre":"Líbano",
+        "capital":"Beirut",
+        "bandera":"bandera_de_libano",
+        "continente":"Asia"
+    },
+    {
+        "id": 106,
+        "nombre":"Malasia",
+        "capital":"Kuala Lumpur",
+        "bandera":"bandera_de_malasia",
+        "continente":"Asia"
+    },
+    {
+        "id": 107,
+        "nombre":"Maldivas",
+        "capital":"Malé",
+        "bandera":"bandera_de_maldivas",
+        "continente":"Asia"
+    },
+    {
+        "id": 108,
+        "nombre":"Mongolia",
+        "capital":"Ulán Bator",
+        "bandera":"bandera_de_mongolia",
+        "continente":"Asia"
+    },
+    {
+        "id": 109,
+        "nombre":"Nepal",
+        "capital":"Katmandú",
+        "bandera":"bandera_de_nepal",
+        "continente":"Asia"
+    },
+    {
+        "id": 110,
+        "nombre":"Omán",
+        "capital":"Mascate",
+        "bandera":"bandera_de_oman",
+        "continente":"Asia"
+    },
+    {
+        "id": 111,
+        "nombre":"Pakistán",
+        "capital":"Islamabad",
+        "bandera":"bandera_de_pakistan",
+        "continente":"Asia"
+    },
+    {
+        "id": 112,
+        "nombre":"Palestina",
+        "capital":"Jerusalén",
+        "bandera":"bandera_de_palestina",
+        "continente":"Asia"
+    },
+    {
+        "id": 113,
+        "nombre":"Singapur",
+        "capital":"Singapur",
+        "bandera":"bandera_de_singapur",
+        "continente":"Asia"
+    },
+    {
+        "id": 114,
+        "nombre":"Siria",
+        "capital":"Damasco",
+        "bandera":"bandera_de_siria",
+        "continente":"Asia"
+    },
+    {
+        "id": 115,
+        "nombre":"Sri Lanka",
+        "capital":"Sri Jayawardenapura Kotte",
+        "bandera":"bandera_de_sri_lanka",
+        "continente":"Asia"
+    },
+    {
+        "id": 116,
+        "nombre":"Tailandia",
+        "capital":"Bangkok",
+        "bandera":"bandera_de_tailandia",
+        "continente":"Asia"
+    },
+    {
+        "id": 117,
+        "nombre":"Tayikistán",
+        "capital":"Dusambé",
+        "bandera":"bandera_de_tayikistan",
+        "continente":"Asia"
+    },
+    {
+        "id": 118,
+        "nombre":"Turkmenistán",
+        "capital":"Asjabad",
+        "bandera":"bandera_de_turkmenistan",
+        "continente":"Asia"
+    },
+    {
+        "id": 119,
+        "nombre":"Turquía",
+        "capital":"Ankara",
+        "bandera":"bandera_de_turquia",
+        "continente":"Asia"
+    },
+    {
+        "id": 120,
+        "nombre":"Uzbekistán",
+        "capital":"Taskent",
+        "bandera":"bandera_de_uzbekistan",
+        "continente":"Asia"
+    },
+    {
+        "id": 121,
+        "nombre":"Vietnam",
+        "capital":"Hanói",
+        "bandera":"bandera_de_vietnam",
+        "continente":"Asia"
+    },
+    {
+        "id": 122,
+        "nombre":"Yemen",
+        "capital":"Saná",
+        "bandera":"bandera_de_yemen",
+        "continente":"Asia"
+    },
+    {
+        "id": 123,
+        "nombre":"Timor Oriental",
+        "capital":"Dili",
+        "bandera":"bandera_de_timor_oriental",
+        "continente":"Asia"
+    },
+    {
+        "id": 124,
+        "nombre":"Australia",
+        "capital":"Camberra",
+        "bandera":"bandera_de_australia",
+        "continente":"Oceanía"
+    },
+    {
+        "id": 125,
+        "nombre":"Fiyi",
+        "capital":"Suva",
+        "bandera":"bandera_de_fiyi",
+        "continente":"Oceanía"
+    },
+    {
+        "id": 126,
+        "nombre":"Islas Marshall",
+        "capital":"Majuro",
+        "bandera":"bandera_de_islas_marshall",
+        "continente":"Oceanía"
+    },
+    {
+        "id": 127,
+        "nombre":"Islas Salomón",
+        "capital":"Honiara",
+        "bandera":"bandera_de_islas_salomon",
+        "continente":"Oceanía"
+    },
+    {
+        "id": 128,
+        "nombre":"Kiribati",
+        "capital":"Tarawa",
+        "bandera":"bandera_de_kiribati",
+        "continente":"Oceanía"
+    },
+    {
+        "id": 129,
+        "nombre":"Micronesia",
+        "capital":"Palikir",
+        "bandera":"bandera_de_micronesia",
+        "continente":"Oceanía"
+    },
+    {
+        "id": 130,
+        "nombre":"Nauru",
+        "capital":"Yaren",
+        "bandera":"bandera_de_nauru",
+        "continente":"Oceanía"
+    },
+    {
+        "id": 131,
+        "nombre":"Nueva Zelanda",
+        "capital":"Wellington",
+        "bandera":"bandera_de_nueva_zelanda",
+        "continente":"Oceanía"
+    },
+    {
+        "id": 132,
+        "nombre":"Palaos",
+        "capital":"Ngerulmud",
+        "bandera":"bandera_de_palaos",
+        "continente":"Oceanía"
+    },
+    {
+        "id": 133,
+        "nombre":"Papúa Nueva Guinea",
+        "capital":"Port Moresby",
+        "bandera":"bandera_de_papua_nueva_guinea",
+        "continente":"Oceanía"
+    },
+    {
+        "id": 134,
+        "nombre":"Samoa",
+        "capital":"Apia",
+        "bandera":"bandera_de_samoa",
+        "continente":"Oceanía"
+    },
+    {
+        "id": 135,
+        "nombre":"Tonga",
+        "capital":"Nukualofa",
+        "bandera":"bandera_de_tonga",
+        "continente":"Oceanía"
+    },
+    {
+        "id": 136,
+        "nombre":"Tuvalu",
+        "capital":"Funafuti",
+        "bandera":"bandera_de_tuvalu",
+        "continente":"Oceanía"
+    },
+    {
+        "id": 137,
+        "nombre":"Vanuatu",
+        "capital":"Port Vila",
+        "bandera":"bandera_de_vanuatu",
+        "continente":"Oceanía"
+    },
+    {
+        "id": 138,
+        "nombre":"Argelia",
+        "capital":"Argel",
+        "bandera":"bandera_de_argelia",
+        "continente":"África"
+    },
+    {
+        "id": 139,
+        "nombre":"Angola",
+        "capital":"Luanda",
+        "bandera":"bandera_de_angola",
+        "continente":"África"
+    },
+    {
+        "id": 140,
+        "nombre":"Benín",
+        "capital":"Porto Novo",
+        "bandera":"bandera_de_benin",
+        "continente":"África"
+    },
+    {
+        "id": 141,
+        "nombre":"Botsuana",
+        "capital":"Gaborone",
+        "bandera":"bandera_de_botsuana",
+        "continente":"África"
+    },
+    {
+        "id": 142,
+        "nombre":"Burkina Faso",
+        "capital":"Uagadugú",
+        "bandera":"bandera_de_burkina_faso",
+        "continente":"África"
+    },
+    {
+        "id": 143,
+        "nombre":"Burundi",
+        "capital":"Buyumbura",
+        "bandera":"bandera_de_burundi",
+        "continente":"África"
+    },
+    {
+        "id": 144,
+        "nombre":"Cabo Verde",
+        "capital":"Praia",
+        "bandera":"bandera_de_cabo_verde",
+        "continente":"África"
+    },
+    {
+        "id": 145,
+        "nombre":"Camerún",
+        "capital":"Yaundé",
+        "bandera":"bandera_de_camerun",
+        "continente":"África"
+    },
+    {
+        "id": 146,
+        "nombre":"Chad",
+        "capital":"Yamena",
+        "bandera":"bandera_de_chad",
+        "continente":"África"
+    },
+    {
+        "id": 147,
+        "nombre":"Comoras",
+        "capital":"Moroni",
+        "bandera":"bandera_de_comoras",
+        "continente":"África"
+    },
+    {
+        "id": 148,
+        "nombre":"Costa de Marfil",
+        "capital":"Yamusukro",
+        "bandera":"bandera_de_costa_de_marfil",
+        "continente":"África"
+    },
+    {
+        "id": 149,
+        "nombre":"Egipto",
+        "capital":"El Cairo",
+        "bandera":"bandera_de_egipto",
+        "continente":"África"
+    },
+    {
+        "id": 150,
+        "nombre":"Eritrea",
+        "capital":"Asmara",
+        "bandera":"bandera_de_eritrea",
+        "continente":"África"
+    },
+    {
+        "id": 151,
+        "nombre":"Etiopía",
+        "capital":"Adís Abeba",
+        "bandera":"bandera_de_etiopia",
+        "continente":"África"
+    },
+    {
+        "id": 152,
+        "nombre":"Gabón",
+        "capital":"Libreville",
+        "bandera":"bandera_de_gabon",
+        "continente":"África"
+    },
+    {
+        "id": 153,
+        "nombre":"Gambia",
+        "capital":"Banjul",
+        "bandera":"bandera_de_gambia",
+        "continente":"África"
+    },
+    {
+        "id": 154,
+        "nombre":"Ghana",
+        "capital":"Acra",
+        "bandera":"bandera_de_ghana",
+        "continente":"África"
+    },
+    {
+        "id": 155,
+        "nombre":"Guinea",
+        "capital":"Conakri",
+        "bandera":"bandera_de_guinea",
+        "continente":"África"
+    },
+    {
+        "id": 156,
+        "nombre":"Guinea-Bisáu",
+        "capital":"Bisáu",
+        "bandera":"bandera_de_guinea_bisau",
+        "continente":"África"
+    },
+    {
+        "id": 157,
+        "nombre":"Guinea Ecuatorial",
+        "capital":"Malabo",
+        "bandera":"bandera_de_guinea_ecuatorial",
+        "continente":"África"
+    },
+    {
+        "id": 158,
+        "nombre":"Kenia",
+        "capital":"Nairobi",
+        "bandera":"bandera_de_kenia",
+        "continente":"África"
+    },
+    {
+        "id": 159,
+        "nombre":"Lesoto",
+        "capital":"Maseru",
+        "bandera":"bandera_de_lesoto",
+        "continente":"África"
+    },
+    {
+        "id": 160,
+        "nombre":"Liberia",
+        "capital":"Monrovia",
+        "bandera":"bandera_de_liberia",
+        "continente":"África"
+    },
+    {
+        "id": 161,
+        "nombre":"Libia",
+        "capital":"Trípoli",
+        "bandera":"bandera_de_libia",
+        "continente":"África"
+    },
+    {
+        "id": 162,
+        "nombre":"Madagascar",
+        "capital":"Antananarivo",
+        "bandera":"bandera_de_madagascar",
+        "continente":"África"
+    },
+    {
+        "id": 163,
+        "nombre":"Malaui",
+        "capital":"Lilongüe",
+        "bandera":"bandera_de_malaui",
+        "continente":"África"
+    },
+    {
+        "id": 164,
+        "nombre":"Malí",
+        "capital":"Bamako",
+        "bandera":"bandera_de_mali",
+        "continente":"África"
+    },
+    {
+        "id": 165,
+        "nombre":"Marruecos",
+        "capital":"Rabat",
+        "bandera":"bandera_de_marruecos",
+        "continente":"África"
+    },
+    {
+        "id": 166,
+        "nombre":"Mauricio",
+        "capital":"Port Louis",
+        "bandera":"bandera_de_mauricio",
+        "continente":"África"
+    },
+    {
+        "id": 167,
+        "nombre":"Mauritania",
+        "capital":"Nuakchot",
+        "bandera":"bandera_de_mauritania",
+        "continente":"África"
+    },
+    {
+        "id": 168,
+        "nombre":"Mozambique",
+        "capital":"Maputo",
+        "bandera":"bandera_de_mozambique",
+        "continente":"África"
+    },
+    {
+        "id": 169,
+        "nombre":"Namibia",
+        "capital":"Windhoek",
+        "bandera":"bandera_de_namibia",
+        "continente":"África"
+    },
+    {
+        "id": 170,
+        "nombre":"Níger",
+        "capital":"Niamey",
+        "bandera":"bandera_de_niger",
+        "continente":"África"
+    },
+    {
+        "id": 171,
+        "nombre":"Nigeria",
+        "capital":"Abuya",
+        "bandera":"bandera_de_nigeria",
+        "continente":"África"
+    },
+    {
+        "id": 172,
+        "nombre":"República Centroafricana",
+        "capital":"Bangui",
+        "bandera":"bandera_de_republica_centroafricana",
+        "continente":"África"
+    },
+    {
+        "id": 173,
+        "nombre":"República del Congo",
+        "capital":"Brazzaville",
+        "bandera":"bandera_de_republica_del_congo",
+        "continente":"África"
+    },
+    {
+        "id": 174,
+        "nombre":"República Democrática del Congo",
+        "capital":"Kinsasa",
+        "bandera":"bandera_de_republica_democratica_del_congo",
+        "continente":"África"
+    },
+    {
+        "id": 175,
+        "nombre":"Ruanda",
+        "capital":"Kigali",
+        "bandera":"bandera_de_ruanda",
+        "continente":"África"
+    },
+    {
+        "id": 176,
+        "nombre":"Santo Tomé y Príncipe",
+        "capital":"Santo Tomé",
+        "bandera":"bandera_de_santo_tome_principe",
+        "continente":"África"
+    },
+    {
+        "id": 177,
+        "nombre":"Senegal",
+        "capital":"Dakar",
+        "bandera":"bandera_de_senegal",
+        "continente":"África"
+    },
+    {
+        "id": 178,
+        "nombre":"Seychelles",
+        "capital":"Victoria",
+        "bandera":"bandera_de_seychelles",
+        "continente":"África"
+    },
+    {
+        "id": 179,
+        "nombre":"Sierra Leona",
+        "capital":"Freetown",
+        "bandera":"bandera_de_sierra_leona",
+        "continente":"África"
+    },
+    {
+        "id": 180,
+        "nombre":"Somalia",
+        "capital":"Mogadiscio",
+        "bandera":"bandera_de_somalia",
+        "continente":"África"
+    },
+    {
+        "id": 181,
+        "nombre":"Sudáfrica",
+        "capital":"Pretoria",
+        "bandera":"bandera_de_sudafrica",
+        "continente":"África"
+    },
+    {
+        "id": 182,
+        "nombre":"Sudán",
+        "capital":"Jartum",
+        "bandera":"bandera_de_sudan",
+        "continente":"África"
+    },
+    {
+        "id": 183,
+        "nombre":"Sudán del Sur",
+        "capital":"Yuba",
+        "bandera":"bandera_de_sudan_del_sur",
+        "continente":"África"
+    },
+    {
+        "id": 184,
+        "nombre":"Suazilandia",
+        "capital":"Lobamba",
+        "bandera":"bandera_de_suazilandia",
+        "continente":"África"
+    },
+    {
+        "id": 185,
+        "nombre":"Tanzania",
+        "capital":"Dodoma",
+        "bandera":"bandera_de_tanzania",
+        "continente":"África"
+    },
+    {
+        "id": 186,
+        "nombre":"Togo",
+        "capital":"Lomé",
+        "bandera":"bandera_de_togo",
+        "continente":"África"
+    },
+    {
+        "id": 187,
+        "nombre":"Túnez",
+        "capital":"Túnez",
+        "bandera":"bandera_de_tunez",
+        "continente":"África"
+    },
+    {
+        "id": 188,
+        "nombre":"Uganda",
+        "capital":"Kampala",
+        "bandera":"bandera_de_uganda",
+        "continente":"África"
+    },
+    {
+        "id": 189,
+        "nombre":"Yibuti",
+        "capital":"Yibuti",
+        "bandera":"bandera_de_yibuti",
+        "continente":"África"
+    },
+    {
+        "id": 190,
+        "nombre":"Zambia",
+        "capital":"Lusaka",
+        "bandera":"bandera_de_zambia",
+        "continente":"África"
+    },
+    {
+        "id": 191,
+        "nombre":"Zimbabue",
+        "capital":"Harare",
+        "bandera":"bandera_de_zimbabue",
+        "continente":"África"
+    }
+]

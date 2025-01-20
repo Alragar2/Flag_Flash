@@ -1,0 +1,29 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Figura de dos personas (multijugador local) -->
+    <!-- Cabeza del primer jugador -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M4,7a3,3 0,1 1,6 0a3,3 0,1 1,-6 0" />
+
+    <!-- Cuerpo del primer jugador -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M1,14c0,-2 1.5,-4 4,-4h4c2.5,0 4,2 4,4v3h-12z" />
+
+    <!-- Cabeza del segundo jugador -->
+    <path
+        android:fillColor="#757575"
+        android:pathData="M14,7a3,3 0,1 1,6 0a3,3 0,1 1,-6 0" />
+
+    <!-- Cuerpo del segundo jugador -->
+    <path
+        android:fillColor="#757575"
+        android:pathData="M11,14c0,-2 1.5,-4 4,-4h4c2.5,0 4,2 4,4v3h-12z" />
+
+</vector>
+

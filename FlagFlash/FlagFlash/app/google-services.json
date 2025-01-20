@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "140100141028",
+    "project_id": "flag-flash-tfg",
+    "storage_bucket": "flag-flash-tfg.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:140100141028:android:ceca93143e35716f3891f1",
+        "android_client_info": {
+          "package_name": "alragar2.isi3.uv.flagflash"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxCXiQ-APrScD-dGwplrwzKOwoBnaOvGs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
