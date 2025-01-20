@@ -1,0 +1,28 @@
+Cosas que ya hay introducidas:
+- Modo banderas 
+- Modo nombre países
+- Modo capitales
+- Vidas
+- Galería
+- Multijugador local
+- Sistema de puntos
+
+
+Cosas a introducir en la aplicación seguro:
+
+- Registro/inicio de sesión de usuarios: Se hace con firebase ✅
+- Ranking de puntos de los usuarios
+- Modo maratón (responder infinito hasta que falles 3 veces)
+- Higher/lower de habitantes
+- Limite de tiempo en las partidas.
+- Mostrar en la galería solo las que se hayan acertado.
+- Agregar los ajustes.
+- Filtro de búsqueda en galería.
+
+
+Cosas a introducir si tengo tiempo:
+- Modo escudos de selecciones
+- Sistema de pistas
+- Cambiar el menú
+- Introducir avatares y temas desbloqueables.
+- Estados no reconocidos
