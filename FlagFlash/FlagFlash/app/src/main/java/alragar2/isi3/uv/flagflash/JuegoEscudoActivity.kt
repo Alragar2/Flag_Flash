@@ -42,10 +42,13 @@ class JuegoEscudoActivity: AppCompatActivity() {
     private lateinit var scoreTextView: TextView
     private var scoreReal = 0
     private val selectedCountries = mutableListOf<String>()
+    private var selectedContinent: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.juego_escudo)
+
+        selectedContinent = intent.getStringExtra("selectedContinent")
 
         val userPreferences = UserPreferences(this)
         userPreferences.getScore { score ->
@@ -191,6 +194,7 @@ class JuegoEscudoActivity: AppCompatActivity() {
                 Intent(this, DerrotaIndividualActivity::class.java)
             }
             intent.putExtra("originActivity", "JuegoEscudoActivity")
+            intent.putExtra("selectedContinent", selectedContinent)
             startActivity(intent)
             finish()
         }, {
@@ -222,7 +226,10 @@ class JuegoEscudoActivity: AppCompatActivity() {
                 val countryNames = mutableListOf<String>()
                 for (countrySnapshot in dataSnapshot.children) {
                     val countryName = countrySnapshot.child("nombre").getValue(String::class.java)
-                    countryName?.let { countryNames.add(it) }
+                    val continent = countrySnapshot.child("continente").getValue(String::class.java)
+                    if (countryName != null && (continent == selectedContinent || selectedContinent == "Todos")) {
+                        countryNames.add(countryName)
+                    }
                 }
 
                 val playCountryNames = mutableListOf<String>()

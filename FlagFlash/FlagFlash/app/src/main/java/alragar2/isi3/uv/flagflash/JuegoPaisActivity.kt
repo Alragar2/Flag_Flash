@@ -43,6 +43,7 @@ class JuegoPaisActivity: AppCompatActivity() {
     private lateinit var scoreTextView: TextView
     private lateinit var userScoreManager: UserScoreManager
     private var scoreReal = 0
+    private var selectedContinent: String? = null
 
 
     @SuppressLint("MissingInflatedId")
@@ -50,7 +51,7 @@ class JuegoPaisActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.juego_pais)
 
-
+        selectedContinent = intent.getStringExtra("selectedContinent")
 
         tickImageView = findViewById(R.id.tick)
 
@@ -190,6 +191,7 @@ class JuegoPaisActivity: AppCompatActivity() {
                 Intent(this, DerrotaIndividualActivity::class.java)
             }
             intent.putExtra("originActivity", "JuegoPaisActivity")
+            intent.putExtra("selectedContinent", selectedContinent)
             startActivity(intent)
             finish()
         }, {
@@ -231,7 +233,10 @@ class JuegoPaisActivity: AppCompatActivity() {
                 val countryFlags = mutableListOf<String>()
                 for (countrySnapshot in dataSnapshot.children) {
                     val banderasURL = countrySnapshot.child("bandera").getValue(String::class.java)
-                    banderasURL?.let { countryFlags.add(it) }
+                    val continent = countrySnapshot.child("continente").getValue(String::class.java)
+                    if (banderasURL != null && (continent == selectedContinent || selectedContinent == "Todos")) {
+                        countryFlags.add(banderasURL)
+                    }
                 }
 
                 val playCountryFlags = mutableListOf<String>()

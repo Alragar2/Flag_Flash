@@ -37,11 +37,14 @@ class JuegoCapitalActivity : AppCompatActivity(){
     private lateinit var scoreTextView: TextView
     private lateinit var userScoreManager: UserScoreManager
     private var scoreReal = 0
+    private var selectedContinent: String? = null
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.juego_capital)
+
+        selectedContinent = intent.getStringExtra("selectedContinent")
 
         // Initialize Firestore
         val userPreferences = UserPreferences(this)
@@ -152,6 +155,7 @@ class JuegoCapitalActivity : AppCompatActivity(){
                 Intent(this, DerrotaIndividualActivity::class.java)
             }
             intent.putExtra("originActivity", "JuegoCapitalActivity")
+            intent.putExtra("selectedContinent", selectedContinent)
             startActivity(intent)
             finish()
         }, {
@@ -186,8 +190,11 @@ class JuegoCapitalActivity : AppCompatActivity(){
                 for (countrySnapshot in dataSnapshot.children) {
                     val capitalName = countrySnapshot.child("capital").getValue(String::class.java)
                     val countryName = countrySnapshot.child("nombre").getValue(String::class.java)
-                    capitalName?.let { capitalNames.add(it) }
-                    countryName?.let { countryNames.add(it) }
+                    val continent = countrySnapshot.child("continente").getValue(String::class.java)
+                    if (countryName != null && (continent == selectedContinent || selectedContinent == "Todos")) {
+                        capitalName?.let { capitalNames.add(it) }
+                        countryName?.let { countryNames.add(it) }
+                    }
                 }
 
                 val playCapitalNames = mutableListOf<String>()

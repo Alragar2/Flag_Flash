@@ -8,10 +8,15 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 class DerrotaIndividualActivity : AppCompatActivity() {
+
     private lateinit var mediaPlayer: MediaPlayer
+    private var selectedContinent: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_derrota_ind)
+
+        selectedContinent = intent.getStringExtra("selectedContinent")
 
         mediaPlayer = MediaPlayer.create(this, R.raw.game_over)
         mediaPlayer.start()
@@ -44,10 +49,9 @@ class DerrotaIndividualActivity : AppCompatActivity() {
                 "JuegoEscudoActivity" -> Intent(this, JuegoEscudoActivity::class.java)
                 else -> Intent (this, MainActivity::class.java)
             }
-            intent?.let {
-                startActivity(it)
-                finish()
-            }
+            intent.putExtra("selectedContinent", selectedContinent)
+            startActivity(intent)
+            finish()
         }
     }
     override fun onResume() {

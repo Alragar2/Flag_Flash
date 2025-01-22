@@ -10,10 +10,13 @@ import androidx.appcompat.app.AppCompatActivity
 class VictoriaIndividualActivity : AppCompatActivity() {
 
     private lateinit var mediaPlayer: MediaPlayer
+    private var selectedContinent: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_victoria_ind)
+
+        selectedContinent = intent.getStringExtra("selectedContinent")
 
         mediaPlayer = MediaPlayer.create(this, R.raw.win)
         mediaPlayer.start()
@@ -48,6 +51,7 @@ class VictoriaIndividualActivity : AppCompatActivity() {
                 "JuegoEscudoActivity" -> Intent(this, JuegoEscudoActivity::class.java)
                 else -> Intent (this, MainActivity::class.java)
             }
+            intent.putExtra("selectedContinent", selectedContinent)
             startActivity(intent)
             finish()
         }

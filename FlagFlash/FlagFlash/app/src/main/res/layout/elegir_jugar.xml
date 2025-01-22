@@ -11,7 +11,7 @@
 
     <TextView
         android:id="@+id/gameModesTitle"
-        android:layout_width="300dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Juega conociendo:"
         android:textSize="30sp"
@@ -21,7 +21,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.1"/>
+        app:layout_constraintVertical_bias="0.02"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/continentFilterRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/gameModesTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/gameModesRecyclerView">
+    </androidx.recyclerview.widget.RecyclerView>
 
 
     <androidx.recyclerview.widget.RecyclerView
@@ -32,7 +44,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gameModesTitle"
+        app:layout_constraintTop_toBottomOf="@+id/continentFilterRecyclerView"
         app:layout_constraintVertical_bias="0.1" />
 
 

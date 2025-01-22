@@ -41,11 +41,14 @@ class JuegoBanderaActivity : AppCompatActivity() {
     private lateinit var scoreTextView: TextView
     private var scoreReal = 0
     private val selectedCountries = mutableListOf<String>()
+    private var selectedContinent: String? = null
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.juego_bandera)
+
+        selectedContinent = intent.getStringExtra("selectedContinent")
 
         val userPreferences = UserPreferences(this)
         userPreferences.getScore { score ->
@@ -164,6 +167,7 @@ class JuegoBanderaActivity : AppCompatActivity() {
                 Intent(this, DerrotaIndividualActivity::class.java)
             }
             intent.putExtra("originActivity", "JuegoBanderaActivity")
+            intent.putExtra("selectedContinent", selectedContinent)
             startActivity(intent)
             finish()
         }, {
@@ -222,7 +226,15 @@ class JuegoBanderaActivity : AppCompatActivity() {
                 val countryNames = mutableListOf<String>()
                 for (countrySnapshot in dataSnapshot.children) {
                     val countryName = countrySnapshot.child("nombre").getValue(String::class.java)
-                    countryName?.let { countryNames.add(it) }
+                    val continent = countrySnapshot.child("continente").getValue(String::class.java)
+                    if (countryName != null && (continent == selectedContinent || selectedContinent == "Todos")) {
+                        countryNames.add(countryName)
+                    }
+                }
+
+                if (countryNames.size < 4) {
+                    Log.e("FirebaseError", "No hay suficientes países para seleccionar")
+                    return@addOnSuccessListener
                 }
 
                 val playCountryNames = mutableListOf<String>()

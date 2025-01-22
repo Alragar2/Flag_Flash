@@ -4,7 +4,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.recyclerview.widget.RecyclerView
-import alragar2.isi3.uv.flagflash.R
 
 class GameModeAdapter(private val gameModes: List<String>, private val onGameModeClick: (String) -> Unit) : RecyclerView.Adapter<GameModeAdapter.GameModeViewHolder>() {
 
