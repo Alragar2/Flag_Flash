@@ -90,9 +90,11 @@
             android:screenOrientation="portrait"
             android:exported="false"/>
 
-        <activity android:name=".AuthenticationRegisterActivity"></activity>
+        <activity android:name=".AuthenticationRegisterActivity"
+            android:screenOrientation="portrait"></activity>
 
-        <activity android:name=".AuthenticationLoginActivity"></activity>
+        <activity android:name=".AuthenticationLoginActivity"
+            android:screenOrientation="portrait"></activity>
 
 
         <activity
