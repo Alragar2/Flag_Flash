@@ -19,6 +19,10 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Room
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -49,6 +53,7 @@ class MultijugadorPaisActivity : AppCompatActivity() {
     private val selectedCountries = mutableSetOf<String>()
     private lateinit var tickImageView: ImageView
     private lateinit var tickImageView2: ImageView
+    private lateinit var databaseReference: DatabaseReference
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,17 +63,8 @@ class MultijugadorPaisActivity : AppCompatActivity() {
         tickImageView = findViewById(R.id.tick)
         tickImageView2 = findViewById(R.id.tick2)
 
-        try {
-            val database = Room.databaseBuilder(
-                applicationContext,
-                PaisDatabase::class.java,
-                "pais_database"
-            )
-                .fallbackToDestructiveMigration()
-                .build()
 
-
-            paisDao = database.paisDao()
+        databaseReference = FirebaseDatabase.getInstance("https://flag-flash-tfg-default-rtdb.europe-west1.firebasedatabase.app/").reference
             vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
             bandera1 = findViewById(R.id.bandera1)
@@ -79,6 +75,8 @@ class MultijugadorPaisActivity : AppCompatActivity() {
             bandera6 = findViewById(R.id.bandera6)
             bandera7 = findViewById(R.id.bandera7)
             bandera8 = findViewById(R.id.bandera8)
+
+
 
 
             progressBar = findViewById(R.id.progressBar)
@@ -171,9 +169,6 @@ class MultijugadorPaisActivity : AppCompatActivity() {
                     }
                 }
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
     }
 
     fun playCorrectAnswerSound() {
@@ -182,36 +177,55 @@ class MultijugadorPaisActivity : AppCompatActivity() {
     }
 
     private fun updateButtons() {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                var countryNames: List<String>
-                do {
-                    countryNames = paisDao.getFourRandomCountryNames()
-                } while (countryNames.any { it in selectedCountries })
+        databaseReference.child("paises").get().addOnSuccessListener { dataSnapshot ->
+            if (dataSnapshot.exists()) {
+                val countryFlags = mutableListOf<String>()
+                for (countrySnapshot in dataSnapshot.children) {
+                    val countryFlag = countrySnapshot.child("bandera").getValue(String::class.java)
+                    if (countryFlag != null) {
+                        countryFlags.add(countryFlag)
+                    }
+                }
 
-                val paises = countryNames.map { paisDao.getPaisByName(it) }
-                val correctIndex = Random.nextInt(paises.size)
-                val correctPais = paises[correctIndex]
+                if (countryFlags.size < 4) {
+                    return@addOnSuccessListener
+                }
 
-                withContext(Dispatchers.Main) {
+                val playCountryFlags = mutableListOf<String>()
+
+                while (playCountryFlags.size < 4) {
+                    val randomCountryFlag = countryFlags.random()
+                    if (randomCountryFlag !in playCountryFlags && randomCountryFlag != correctCountry) {
+                        playCountryFlags.add(randomCountryFlag)
+                    }
+                }
+
+                correctCountry = playCountryFlags.random()
+                val paisSnapshot = dataSnapshot.children.first { it.child("bandera").getValue(String::class.java) == correctCountry }
+                val nameCountry = paisSnapshot.child("nombre").getValue(String::class.java)
+
+                updateUI {
                     val banderas = listOf(bandera1, bandera2, bandera3, bandera4, bandera5, bandera6, bandera7, bandera8)
                     for (i in banderas.indices) {
                         val imageView = banderas[i]
-                        val pais = paises[i % paises.size]
-                        val resourceId = resources.getIdentifier(pais.bandera, "drawable", packageName)
-                        imageView.setImageResource(resourceId)
-                        imageView.tag = pais.nombre
+                        val pais = playCountryFlags[i % playCountryFlags.size]
+                        Log.d("Pais", pais)
+                        Glide.with(this@MultijugadorPaisActivity)
+                            .load(pais)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(imageView)
+                        imageView.tag = pais
                     }
 
-                    paisTextView.text = correctPais.nombre
-                    paisTextView2.text = correctPais.nombre
-                    correctCountry = correctPais.nombre
+                    if (nameCountry != null) {
+                        Log.d("Pais", nameCountry)
+                    }
+                    paisTextView.text = nameCountry
+                    paisTextView2.text = nameCountry
 
-                    // Agregar el país seleccionado a la lista de países seleccionados
+
                     selectedCountries.add(correctCountry)
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
         }
     }

@@ -20,10 +20,14 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Room
+import com.bumptech.glide.Glide
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+
 
 class MultijugadorCapitalActivity : AppCompatActivity() {
     private var correctCountry = ""
@@ -37,24 +41,15 @@ class MultijugadorCapitalActivity : AppCompatActivity() {
     private lateinit var buttons: List<Button>
     private lateinit var paisDao: PaisDao
     private lateinit var vibrator: Vibrator
+    private lateinit var databaseReference: DatabaseReference
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.multijugador_capital)
 
-        try {
-
-            val database = Room.databaseBuilder(
-                applicationContext,
-                PaisDatabase::class.java,
-                "pais_database"
-            )
-                .fallbackToDestructiveMigration()
-                .build()
-
-            paisDao = database.paisDao()
-            vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        databaseReference = FirebaseDatabase.getInstance("https://flag-flash-tfg-default-rtdb.europe-west1.firebasedatabase.app/").reference
+        vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
             buttons = listOf(
                 findViewById(R.id.Pais1),
@@ -141,9 +136,6 @@ class MultijugadorCapitalActivity : AppCompatActivity() {
                     }
                 }
             }
-        }catch (e: Exception) {
-                e.printStackTrace()
-            }
     }
 
     private fun playCorrectAnswerSound() {
@@ -155,38 +147,54 @@ class MultijugadorCapitalActivity : AppCompatActivity() {
     private val selectedCountries = mutableListOf<String>()
 
     private fun updateButtons() {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                var capitalNames: List<String>
-                do {
-                    capitalNames = paisDao.getFourRandomCapital()
-                    Log.d("CapitalNames", capitalNames.toString())
-                } while (capitalNames.any { it in selectedCountries })
 
-                correctCountry = capitalNames.random()
-                val pais = paisDao.getPaisByCapital(correctCountry)
-                val resourceId = resources.getIdentifier(pais.bandera, "drawable", packageName)
+        databaseReference.child("paises").get().addOnSuccessListener { dataSnapshot ->
+            if (dataSnapshot.exists()) {
+                val countryCapitalNames = mutableListOf<String>()
+                for (countrySnapshot in dataSnapshot.children) {
+                    val capital = countrySnapshot.child("capital").value.toString()
+                    countryCapitalNames.add(capital)
+                }
+
+                if (countryCapitalNames.size < 4) {
+                    return@addOnSuccessListener
+                }
+
+                val playCapitalNames = mutableListOf<String>()
+
+                while (playCapitalNames.size < 4) {
+                    val randomCapital = countryCapitalNames.random()
+                    if (randomCapital !in playCapitalNames && randomCapital != correctCountry) {
+                        playCapitalNames.add(randomCapital)
+                    }
+                }
+
+                correctCountry = playCapitalNames.random()
+                val capitalSnapshot = dataSnapshot.children.find { it.child("capital").value == correctCountry }
+                val countryName = capitalSnapshot?.child("nombre")?.value.toString()
+                val banderaURL = capitalSnapshot?.child("bandera")?.value.toString()
 
                 updateUI {
                     val imageView = findViewById<ImageView>(R.id.bandera)
                     val imageView2 = findViewById<ImageView>(R.id.bandera2)
+                    Glide.with(this)
+                        .load(banderaURL)
+                        .into(imageView)
+                    Glide.with(this)
+                        .load(banderaURL)
+                        .into(imageView2)
                     val textView = findViewById<TextView>(R.id.nombre_pais1)
                     val textView2 = findViewById<TextView>(R.id.nombre_pais2)
-                    imageView.setImageResource(resourceId)
-                    imageView2.setImageResource(resourceId)
-                    textView.text = pais.nombre
-                    textView2.text = pais.nombre
+                    textView.text = countryName
+                    textView2.text = countryName
 
-                    val shuffledCountryNames = capitalNames.shuffled()
+                    val shuffledCapitalNames = playCapitalNames.shuffled()
                     for (i in buttons.indices) {
-                        buttons[i].text = shuffledCountryNames[i % shuffledCountryNames.size]
+                        buttons[i].text = shuffledCapitalNames[i % shuffledCapitalNames.size]
                     }
 
-                    // Agregar el país seleccionado a la lista de países seleccionados
                     selectedCountries.add(correctCountry)
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
         }
     }

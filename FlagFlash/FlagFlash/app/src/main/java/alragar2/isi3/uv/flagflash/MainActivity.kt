@@ -11,18 +11,46 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.firebase.auth.FirebaseAuth
+import android.app.Dialog
+import android.widget.LinearLayout
+import android.widget.TextView
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
+import kotlinx.coroutines.tasks.await
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var mAdView : AdView
-    private lateinit var logoutButton: Button
     private lateinit var auth: FirebaseAuth
     private lateinit var authStateListener: FirebaseAuth.AuthStateListener
+    private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Verificar si el usuario está autenticado
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser == null) {
+            // Si no está autenticado, redirigir a AuthenticationLoginActivity
+            val intent = Intent(this, AuthenticationLoginActivity::class.java)
+            startActivity(intent)
+            finish() // Finalizar MainActivity para que no pueda volver atrás
+            return
+        }
+
         setContentView(R.layout.activity_main)
+
+        auth = FirebaseAuth.getInstance() // Initialize Firebase Auth
+
+        authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
+            val user = firebaseAuth.currentUser
+            if (user != null) {
+                Log.i("Session", "Sesión iniciada con email: ${user.email}")
+            } else {
+                Log.i("Session", "Sesión cerrada")
+            }
+        }
 
         mAdView = findViewById(R.id.adView)
         val adRequest = AdRequest.Builder().build()
@@ -86,39 +114,95 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        val registroButton = findViewById<Button>(R.id.IniciarSesion)
+        val registroButton = findViewById<Button>(R.id.Options)
         registroButton.setOnClickListener {
-            val intent = Intent(this, AuthenticationLoginActivity::class.java)
-            startActivity(intent)
-
-            val user = FirebaseAuth.getInstance().currentUser
-            if (user != null) {
-                registroButton.visibility = View.GONE  // Ocultar el botón de registro
-            } else {
-                registroButton.visibility = View.VISIBLE  // Mostrar el botón de registro
-            }
+            showOptionsModal()
         }
-
-        logoutButton = findViewById(R.id.logoutButton)
-        auth = FirebaseAuth.getInstance()
-        authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
-            val user = firebaseAuth.currentUser
-            if (user != null) {
-                logoutButton.visibility = View.VISIBLE  // Mostrar el botón de logout
-            } else {
-                logoutButton.visibility = View.GONE  // Ocultar el botón de logout
-            }
-        }
-
-        logoutButton.setOnClickListener {
-            FirebaseAuth.getInstance().signOut()
-            logoutButton.visibility = View.GONE  // Ocultar el botón de logout
-        }
-
 
         // Iniciar el servicio de música
         val musicIntent = Intent(this, MusicService::class.java)
         startService(musicIntent)
+    }
+
+    private fun showOptionsModal() {
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.modal_options)
+
+        val iniciarSesionButton = dialog.findViewById<Button>(R.id.modalIniciarSesion)
+        val cerrarSesionButton = dialog.findViewById<Button>(R.id.modalCerrarSesion)
+        val eliminarCuentaButton = dialog.findViewById<Button>(R.id.modalEliminarCuenta)
+        val nombre = dialog.findViewById<TextView>(R.id.modalNombreUsuario)
+        val score = dialog.findViewById<TextView>(R.id.modalPuntuacion)
+
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user != null) {
+            iniciarSesionButton.visibility = View.GONE
+            cerrarSesionButton.visibility = View.VISIBLE
+            eliminarCuentaButton.visibility = View.VISIBLE
+
+            db.collection("users")
+                .document(user.uid)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document != null && document.exists()) {
+                        nombre.visibility = View.VISIBLE
+                        score.visibility = View.VISIBLE
+                        nombre.text = document.getString("name")
+                        score.text = document.getLong("score")?.toString() ?: "0"
+                    } else {
+                        nombre.visibility = View.GONE
+                        score.visibility = View.GONE
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    nombre.visibility = View.GONE
+                    score.visibility = View.GONE
+                }
+        } else {
+            iniciarSesionButton.visibility = View.VISIBLE
+            cerrarSesionButton.visibility = View.GONE
+            eliminarCuentaButton.visibility = View.GONE
+            nombre.visibility = View.GONE
+            score.visibility = View.GONE
+        }
+
+        iniciarSesionButton.setOnClickListener {
+            val intent = Intent(this, AuthenticationLoginActivity::class.java)
+            startActivity(intent)
+            dialog.dismiss()
+        }
+
+        cerrarSesionButton.setOnClickListener {
+            FirebaseAuth.getInstance().signOut()
+
+            val intent = Intent(this, AuthenticationLoginActivity::class.java)
+            startActivity(intent)
+            dialog.dismiss()
+        }
+
+        eliminarCuentaButton.setOnClickListener {
+            val confirmDialog = Dialog(this)
+            confirmDialog.setContentView(R.layout.dialog_confirm_delete)
+            val confirmButton = confirmDialog.findViewById<Button>(R.id.confirmButton)
+            val cancelButton = confirmDialog.findViewById<Button>(R.id.cancelButton)
+
+            confirmButton.setOnClickListener {
+                FirebaseAuth.getInstance().currentUser?.delete()
+                confirmDialog.dismiss()
+                val intent = Intent(this, AuthenticationLoginActivity::class.java)
+                startActivity(intent)
+                dialog.dismiss()
+            }
+
+            cancelButton.setOnClickListener {
+                confirmDialog.dismiss()
+            }
+
+
+            confirmDialog.show()
+        }
+
+        dialog.show()
     }
 
     override fun onStart() {
@@ -141,12 +225,10 @@ class MainActivity : AppCompatActivity() {
     // No detener el servicio de música en onPause
     override fun onPause() {
         super.onPause()
-
     }
 
     override fun onDestroy() {
         super.onDestroy()
-
         // Detener el servicio de música
         val musicIntent = Intent(this, MusicService::class.java)
         stopService(musicIntent)

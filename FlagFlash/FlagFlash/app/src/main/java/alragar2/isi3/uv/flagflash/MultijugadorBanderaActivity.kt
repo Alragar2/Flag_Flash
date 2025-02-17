@@ -19,6 +19,9 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Room
+import com.bumptech.glide.Glide
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,26 +37,16 @@ class MultijugadorBanderaActivity : AppCompatActivity() {
     private lateinit var progressText: TextView
     private lateinit var progressText2: TextView
     private lateinit var buttons: List<Button>
-    private lateinit var paisDao: PaisDao
     private lateinit var vibrator: Vibrator
+    private lateinit var databaseReference: DatabaseReference
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.multijugador_bandera)
 
-        try {
-
-            val database = Room.databaseBuilder(
-                applicationContext,
-                PaisDatabase::class.java,
-                "pais_database"
-            )
-                .fallbackToDestructiveMigration()
-                .build()
-
-            paisDao = database.paisDao()
-            vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        databaseReference = FirebaseDatabase.getInstance("https://flag-flash-tfg-default-rtdb.europe-west1.firebasedatabase.app/").reference
+        vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
             buttons = listOf(
                 findViewById(R.id.Pais1),
@@ -140,9 +133,6 @@ class MultijugadorBanderaActivity : AppCompatActivity() {
                     }
                 }
             }
-        }catch (e: Exception) {
-                e.printStackTrace()
-            }
     }
 
     private fun playCorrectAnswerSound() {
@@ -154,38 +144,55 @@ class MultijugadorBanderaActivity : AppCompatActivity() {
     private val selectedCountries = mutableListOf<String>()
 
     private fun updateButtons() {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                var countryNames: List<String>
-                do {
-                    countryNames = paisDao.getFourRandomCountryNames()
-                } while (countryNames.any { it in selectedCountries })
+        databaseReference.child("paises").get().addOnSuccessListener { dataSnapshot ->
+            if (dataSnapshot.exists()){
+                val countryNames = mutableListOf<String>()
+                for (countrySnapshot in dataSnapshot.children){
+                    val countryName = countrySnapshot.child("nombre").getValue(String::class.java)
+                    if (countryName != null){
+                        countryNames.add(countryName)
+                    }
+                }
 
-                correctCountry = countryNames.random()
-                val pais = paisDao.getPaisByName(correctCountry)
-                val resourceId = resources.getIdentifier(pais.bandera, "drawable", packageName)
+                if (countryNames.size < 4) {
+                    return@addOnSuccessListener
+                }
+
+                val playCountryNames = mutableListOf<String>()
+
+                while (playCountryNames.size < 4) {
+                    val randomCountryName = countryNames.random()
+                    if (randomCountryName !in playCountryNames && randomCountryName !in selectedCountries) {
+                        playCountryNames.add(randomCountryName)
+                    }
+                }
+
+                correctCountry = playCountryNames.random()
+                val paisSnapshot = dataSnapshot.children.first { it.child("nombre").getValue(String::class.java) == correctCountry }
+                val banderaUrl = paisSnapshot.child("bandera").getValue(String::class.java)
 
                 updateUI {
                     val imageView = findViewById<ImageView>(R.id.bandera)
                     val imageView2 = findViewById<ImageView>(R.id.bandera2)
-                    imageView.setImageResource(resourceId)
-                    imageView2.setImageResource(resourceId)
+                    Glide.with(this)
+                        .load(banderaUrl)
+                        .into(imageView)
+                    Glide.with(this)
+                        .load(banderaUrl)
+                        .into(imageView2)
 
-                    val shuffledCountryNames = countryNames.shuffled()
+                    // Mostrar el nombre del país en la parte inferior de la pantalla
+                    val shuffledCountryNames = playCountryNames.shuffled()
                     for (i in buttons.indices) {
                         buttons[i].text = shuffledCountryNames[i % shuffledCountryNames.size]
                     }
 
-                    // Agregar el país seleccionado a la lista de países seleccionados
                     selectedCountries.add(correctCountry)
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
         }
     }
-
-
+    
     private fun vibrateDevice() {
         if (vibrator.hasVibrator()) {
             if (Build.VERSION.SDK_INT >= 26) {
