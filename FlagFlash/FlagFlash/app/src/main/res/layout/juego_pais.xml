@@ -104,7 +104,7 @@
     </LinearLayout>
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="¿Que bandera es?"
@@ -119,7 +119,7 @@
 
     <TextView
         android:id="@+id/pais"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="España"
         android:textSize="40dp"
@@ -155,7 +155,7 @@
 
         <ImageView
             android:id="@+id/bandera"
-            android:layout_width="180dp"
+            android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_row="0"
             android:layout_rowWeight="1"
@@ -166,7 +166,7 @@
 
         <ImageView
             android:id="@+id/bandera2"
-            android:layout_width="126dp"
+            android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
@@ -175,7 +175,7 @@
 
         <ImageView
             android:id="@+id/bandera3"
-            android:layout_width="180dp"
+            android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
@@ -184,7 +184,7 @@
 
         <ImageView
             android:id="@+id/bandera4"
-            android:layout_width="180dp"
+            android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"

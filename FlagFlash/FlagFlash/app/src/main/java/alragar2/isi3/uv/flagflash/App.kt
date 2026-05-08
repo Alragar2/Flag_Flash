@@ -1,9 +1,11 @@
 package alragar2.isi3.uv.flagflash
 
+import alragar2.isi3.uv.flagflash.musica.MusicService
 import android.app.Activity
 import android.app.Application
 import android.content.Intent
 import android.os.Bundle
+import com.google.android.gms.ads.MobileAds
 
 class App : Application(), Application.ActivityLifecycleCallbacks {
 
@@ -13,6 +15,7 @@ class App : Application(), Application.ActivityLifecycleCallbacks {
     override fun onCreate() {
         super.onCreate()
         registerActivityLifecycleCallbacks(this)
+        MobileAds.initialize(this) {}
     }
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}

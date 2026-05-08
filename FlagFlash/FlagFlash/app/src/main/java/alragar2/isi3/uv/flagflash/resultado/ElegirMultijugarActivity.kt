@@ -1,7 +1,12 @@
-package alragar2.isi3.uv.flagflash
+package alragar2.isi3.uv.flagflash.resultado
 
 import alragar2.isi3.uv.flagflash.BaseDatos.Pais
 import alragar2.isi3.uv.flagflash.BaseDatos.PaisDatabase
+import alragar2.isi3.uv.flagflash.musica.MusicService
+import alragar2.isi3.uv.flagflash.R
+import alragar2.isi3.uv.flagflash.juego.MultijugadorBanderaActivity
+import alragar2.isi3.uv.flagflash.juego.MultijugadorCapitalActivity
+import alragar2.isi3.uv.flagflash.juego.MultijugadorPaisActivity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

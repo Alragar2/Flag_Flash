@@ -1,5 +1,9 @@
-package alragar2.isi3.uv.flagflash
+package alragar2.isi3.uv.flagflash.authentication
 
+import alragar2.isi3.uv.flagflash.MainActivity
+import alragar2.isi3.uv.flagflash.R
+import alragar2.isi3.uv.flagflash.UserPreferences
+import alragar2.isi3.uv.flagflash.UserScoreManager
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -43,8 +47,6 @@ class AuthenticationLoginActivity : AppCompatActivity() {
 
     private fun setup() {
 
-        title = "Authentication"
-
         register.setOnClickListener {
             val intent = Intent(this, AuthenticationRegisterActivity::class.java)
             startActivity(intent)
@@ -52,7 +54,8 @@ class AuthenticationLoginActivity : AppCompatActivity() {
 
         login.setOnClickListener {
             if(email.text.isNotEmpty() && password.text.isNotEmpty()) {
-                FirebaseAuth.getInstance().signInWithEmailAndPassword(email.text.toString(), password.text.toString()).addOnCompleteListener {
+                FirebaseAuth.getInstance()
+                    .signInWithEmailAndPassword(email.text.toString(), password.text.toString()).addOnCompleteListener {
                     if(it.isSuccessful) {
                         userPreferences.getScore { score ->
                             userPreferences.setInitialScore(score)

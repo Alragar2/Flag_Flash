@@ -17,56 +17,61 @@
         android:theme="@style/Theme.FlagFlash"
         tools:targetApi="31">
 
+        <property
+            android:name="android.adservices.AD_SERVICES_CONFIG"
+            android:resource="@xml/gma_ad_services_config"
+            tools:replace="android:resource" />
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-6281701644214410~5770125711"/>
 
         <activity
-            android:name=".ElegirJugarActivity"
+            android:name=".resultado.ElegirJugarActivity"
             android:screenOrientation="portrait"
             android:exported="false"/>
         <activity
-            android:name=".ElegirMultijugarActivity"
+            android:name=".resultado.ElegirMultijugarActivity"
             android:screenOrientation="portrait"
             android:exported="false"/>
 
-        <activity android:name=".JuegoBanderaActivity"
+        <activity android:name=".juego.JuegoBanderaActivity"
             android:screenOrientation="portrait"
             android:exported="false"/>
 
-        <activity android:name=".JuegoPaisActivity"
+        <activity android:name=".juego.JuegoPaisActivity"
             android:screenOrientation="portrait"
             android:exported="false"/>
 
-        <activity android:name=".MultijugadorBanderaActivity"
+        <activity android:name=".juego.MultijugadorBanderaActivity"
             android:screenOrientation="portrait"
             android:exported="false"/>
 
-        <activity android:name=".MultijugadorPaisActivity"
+        <activity android:name=".juego.MultijugadorPaisActivity"
             android:screenOrientation="portrait"
             android:exported="false"/>
 
-        <activity android:name=".VictoriaMJActivity"
+        <activity android:name=".resultado.VictoriaMJActivity"
             android:screenOrientation="portrait"
             android:exported="false"/>
 
-        <activity android:name=".VictoriaMJActivity2"
+        <activity android:name=".resultado.VictoriaMJActivity2"
             android:screenOrientation="portrait"
             android:exported="false"/>
 
-        <activity android:name=".GaleriaActivity"
+        <activity android:name=".galeria.GaleriaActivity"
             android:screenOrientation="portrait"
             android:exported="false"/>
 
-        <activity android:name=".PaisAdapter"
+        <activity android:name=".resultado.PaisAdapter"
             android:screenOrientation="portrait"
             android:exported="false"/>
 
-        <activity android:name=".VictoriaIndividualActivity"
+        <activity android:name=".resultado.VictoriaIndividualActivity"
             android:screenOrientation="portrait"
             android:exported="false"/>
 
-        <activity android:name=".DerrotaIndividualActivity"
+        <activity android:name=".resultado.DerrotaIndividualActivity"
             android:screenOrientation="portrait"
             android:exported="false"/>
 
@@ -74,26 +79,26 @@
             android:screenOrientation="portrait"
             android:exported="false"/>
 
-        <activity android:name=".JuegoCapitalActivity"
+        <activity android:name=".juego.JuegoCapitalActivity"
             android:screenOrientation="portrait"
             android:exported="false"/>
 
-        <activity android:name=".JuegoEscudoActivity"
+        <activity android:name=".juego.JuegoEscudoActivity"
             android:screenOrientation="portrait"
             android:exported="false"/>
 
-        <activity android:name=".MultijugadorCapitalActivity"
+        <activity android:name=".juego.MultijugadorCapitalActivity"
             android:screenOrientation="portrait"
             android:exported="false"/>
 
-        <activity android:name=".RankingActivity"
+        <activity android:name=".ranking.RankingActivity"
             android:screenOrientation="portrait"
             android:exported="false"/>
 
-        <activity android:name=".AuthenticationRegisterActivity"
+        <activity android:name=".authentication.AuthenticationRegisterActivity"
             android:screenOrientation="portrait"></activity>
 
-        <activity android:name=".AuthenticationLoginActivity"
+        <activity android:name=".authentication.AuthenticationLoginActivity"
             android:screenOrientation="portrait"></activity>
 
 
@@ -109,7 +114,7 @@
         </activity>
 
         <service
-            android:name=".MusicService"
+            android:name=".musica.MusicService"
             android:enabled="true"
             android:exported="true"
             android:stopWithTask="false">

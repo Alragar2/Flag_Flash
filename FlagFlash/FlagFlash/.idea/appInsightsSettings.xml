@@ -18,6 +18,23 @@
             </InsightsFilterSettings>
           </value>
         </entry>
+        <entry key="Firebase Crashlytics">
+          <value>
+            <InsightsFilterSettings>
+              <option name="connection">
+                <ConnectionSetting>
+                  <option name="appId" value="alragar2.isi3.uv.flagflash" />
+                  <option name="mobileSdkAppId" value="1:140100141028:android:ceca93143e35716f3891f1" />
+                  <option name="projectId" value="flag-flash-tfg" />
+                  <option name="projectNumber" value="140100141028" />
+                </ConnectionSetting>
+              </option>
+              <option name="signal" value="SIGNAL_UNSPECIFIED" />
+              <option name="timeIntervalDays" value="THIRTY_DAYS" />
+              <option name="visibilityType" value="ALL" />
+            </InsightsFilterSettings>
+          </value>
+        </entry>
       </map>
     </option>
   </component>

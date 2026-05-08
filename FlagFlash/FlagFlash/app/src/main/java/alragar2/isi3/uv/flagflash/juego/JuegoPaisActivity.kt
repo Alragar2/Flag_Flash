@@ -1,5 +1,11 @@
-package alragar2.isi3.uv.flagflash
+package alragar2.isi3.uv.flagflash.juego
 
+import alragar2.isi3.uv.flagflash.InterstitialAdManager
+import alragar2.isi3.uv.flagflash.resultado.DerrotaIndividualActivity
+import alragar2.isi3.uv.flagflash.R
+import alragar2.isi3.uv.flagflash.UserPreferences
+import alragar2.isi3.uv.flagflash.UserScoreManager
+import alragar2.isi3.uv.flagflash.resultado.VictoriaIndividualActivity
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -50,6 +56,8 @@ class JuegoPaisActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.juego_pais)
+
+        InterstitialAdManager.showAdWithProbability(this, 0.4f)
 
         selectedContinent = intent.getStringExtra("selectedContinent")
 

@@ -1,5 +1,7 @@
-package alragar2.isi3.uv.flagflash
+package alragar2.isi3.uv.flagflash.ranking
 
+import alragar2.isi3.uv.flagflash.R
+import alragar2.isi3.uv.flagflash.UserScoreManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager

@@ -1,6 +1,12 @@
-package alragar2.isi3.uv.flagflash
+package alragar2.isi3.uv.flagflash.juego
 
-import android.annotation.SuppressLint
+import alragar2.isi3.uv.flagflash.InterstitialAdManager
+import alragar2.isi3.uv.flagflash.resultado.DerrotaIndividualActivity
+import alragar2.isi3.uv.flagflash.musica.MusicService
+import alragar2.isi3.uv.flagflash.R
+import alragar2.isi3.uv.flagflash.UserPreferences
+import alragar2.isi3.uv.flagflash.UserScoreManager
+import alragar2.isi3.uv.flagflash.resultado.VictoriaIndividualActivity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -47,6 +53,8 @@ class JuegoEscudoActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.juego_escudo)
+
+        InterstitialAdManager.showAdWithProbability(this, 0.4f)
 
         selectedContinent = intent.getStringExtra("selectedContinent")
 

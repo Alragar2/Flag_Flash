@@ -1,5 +1,6 @@
-package alragar2.isi3.uv.flagflash
+package alragar2.isi3.uv.flagflash.resultado
 
+import alragar2.isi3.uv.flagflash.R
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View

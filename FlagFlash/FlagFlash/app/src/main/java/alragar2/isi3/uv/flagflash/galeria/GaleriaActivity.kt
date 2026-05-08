@@ -1,10 +1,12 @@
-package alragar2.isi3.uv.flagflash
+package alragar2.isi3.uv.flagflash.galeria
 
+import alragar2.isi3.uv.flagflash.musica.MusicService
+import alragar2.isi3.uv.flagflash.resultado.PaisAdapter
+import alragar2.isi3.uv.flagflash.R
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView

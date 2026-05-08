@@ -1,5 +1,12 @@
-package alragar2.isi3.uv.flagflash
+package alragar2.isi3.uv.flagflash.resultado
 
+import alragar2.isi3.uv.flagflash.musica.MusicService
+import alragar2.isi3.uv.flagflash.R
+import alragar2.isi3.uv.flagflash.galeria.GameModeAdapter
+import alragar2.isi3.uv.flagflash.juego.JuegoBanderaActivity
+import alragar2.isi3.uv.flagflash.juego.JuegoCapitalActivity
+import alragar2.isi3.uv.flagflash.juego.JuegoEscudoActivity
+import alragar2.isi3.uv.flagflash.juego.JuegoPaisActivity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -14,11 +21,10 @@ class ElegirJugarActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.elegir_jugar)
 
-        val gameModes = listOf("Bandera", "País", "Escudos/Emblemas nacionales", "Capitales") // Añade aquí tus modos de juego
+        val gameModes = listOf("Bandera", "País", "Escudos/Emblemas nacionales", "Capitales")
         val gameModesRecyclerView = findViewById<RecyclerView>(R.id.gameModesRecyclerView)
         gameModesRecyclerView.layoutManager = LinearLayoutManager(this)
         gameModesRecyclerView.adapter = GameModeAdapter(gameModes) { gameMode ->
-            // Aquí manejas el clic en un modo de juego
             val activityMap = mapOf(
                 "Bandera" to JuegoBanderaActivity::class.java,
                 "País" to JuegoPaisActivity::class.java,
@@ -37,8 +43,6 @@ class ElegirJugarActivity : AppCompatActivity() {
         val continentFilterRecyclerView = findViewById<RecyclerView>(R.id.continentFilterRecyclerView)
         continentFilterRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         continentFilterRecyclerView.adapter = ContinentFilterAdapter(continentFilter) { filter ->
-            // Aquí manejas el clic en un filtro de continente
-            // Puedes usar el filtro para mostrar solo los modos de juego de ese continente
             selectedcontinent = filter
         }
     }

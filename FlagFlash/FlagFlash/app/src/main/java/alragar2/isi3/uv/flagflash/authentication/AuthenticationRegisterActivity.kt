@@ -1,5 +1,9 @@
-package alragar2.isi3.uv.flagflash
+package alragar2.isi3.uv.flagflash.authentication
 
+import alragar2.isi3.uv.flagflash.MainActivity
+import alragar2.isi3.uv.flagflash.R
+import alragar2.isi3.uv.flagflash.UserPreferences
+import alragar2.isi3.uv.flagflash.UserScoreManager
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -37,7 +41,6 @@ class AuthenticationRegisterActivity: AppCompatActivity(){
     }
 
     private fun setup(){
-        title = "Register"
 
         register.setOnClickListener{
             if(email.text.isNotEmpty() && password.text.isNotEmpty() && confirmPassword.text.isNotEmpty() && name.text.isNotEmpty()){

@@ -1,5 +1,12 @@
-package alragar2.isi3.uv.flagflash
+package alragar2.isi3.uv.flagflash.juego
 
+import alragar2.isi3.uv.flagflash.InterstitialAdManager
+import alragar2.isi3.uv.flagflash.resultado.DerrotaIndividualActivity
+import alragar2.isi3.uv.flagflash.musica.MusicService
+import alragar2.isi3.uv.flagflash.R
+import alragar2.isi3.uv.flagflash.UserPreferences
+import alragar2.isi3.uv.flagflash.UserScoreManager
+import alragar2.isi3.uv.flagflash.resultado.VictoriaIndividualActivity
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -47,6 +54,8 @@ class JuegoBanderaActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.juego_bandera)
+
+        InterstitialAdManager.showAdWithProbability(this, 0.4f)
 
         selectedContinent = intent.getStringExtra("selectedContinent")
 
@@ -103,12 +112,10 @@ class JuegoBanderaActivity : AppCompatActivity() {
                         scoreReal += 10
                         updateScore(userPreferences, 10) {
                             if (correctGuesses == 10) {
-                                // Finalizar el juego y navegar a la actividad de victoria y guardar los puntos
                                 userPreferences.getScore { score ->
                                     saveUserAndFinish(score)
                                 }
                             } else {
-                                // Generar nuevos botones después de un retraso
                                 Handler(Looper.getMainLooper()).postDelayed({
                                     updateButtons()
                                     resetButtonColors(buttons)
@@ -123,7 +130,6 @@ class JuegoBanderaActivity : AppCompatActivity() {
                     scoreReal -= 5
                     updateScore(userPreferences, -5) {
                         if (lives == 0) {
-                            // Finalizar el juego y navegar a la actividad de derrota y guardar los puntos
                             userPreferences.getScore { score ->
                                 saveUserAndFinish(score)
                             }
@@ -150,17 +156,13 @@ class JuegoBanderaActivity : AppCompatActivity() {
             val newScore = score + increment
             userPreferences.setScore(newScore)
             scoreTextView.text = newScore.toString()
-            Log.d("Score", "Puntuación: $newScore")
             onComplete()
         }
     }
 
     private fun saveUserAndFinish(score: Int){
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
-        Log.d("ScoreR", "Puntuación real: $scoreReal")
-        Log.d("Score", "Puntuación: $score")
         userScoreManager.saveUserScore(userId, score, {
-            // Navegar a la actividad de victoria o derrota
             val intent = if (lives > 0) {
                 Intent(this, VictoriaIndividualActivity::class.java)
             } else {
@@ -171,7 +173,6 @@ class JuegoBanderaActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }, {
-            // Manejar el error al guardar los puntos
             Log.e("FirestoreError", "Error al guardar los puntos", it)
         })
     }
@@ -236,43 +237,29 @@ class JuegoBanderaActivity : AppCompatActivity() {
                     Log.e("FirebaseError", "No hay suficientes países para seleccionar")
                     return@addOnSuccessListener
                 }
-
                 val playCountryNames = mutableListOf<String>()
-
                 while (playCountryNames.size < 4) {
                     val randomCountry = countryNames.random()
                     if (randomCountry !in playCountryNames && randomCountry !in selectedCountries) {
                         playCountryNames.add(randomCountry)
                     }
                 }
+                correctCountry = playCountryNames.random()
+                val paisSnapshot = dataSnapshot.children.first { it.child("nombre").getValue(String::class.java) == correctCountry }
+                val banderaUrl = paisSnapshot.child("bandera").getValue(String::class.java)
+                updateUI {
+                    val imageView = findViewById<ImageView>(R.id.bandera)
+                    Glide.with(this)
+                        .load(banderaUrl)
+                        .into(imageView)
 
-                Log.d("FirebaseData", "Países seleccionados: $playCountryNames")
-
-                if (playCountryNames.size >= 4) {
-                    correctCountry = playCountryNames.random()
-                    val paisSnapshot = dataSnapshot.children.first { it.child("nombre").getValue(String::class.java) == correctCountry }
-                    val banderaUrl = paisSnapshot.child("bandera").getValue(String::class.java)
-
-                    Log.d("FirebaseData", "País correcto: $correctCountry")
-                    Log.d("FirebaseData", "URL Bandera: $banderaUrl")
-
-                    // Actualizar la interfaz de usuario en el subproceso principal
-                    updateUI {
-                        val imageView = findViewById<ImageView>(R.id.bandera)
-                        Glide.with(this)
-                            .load(banderaUrl)
-                            .into(imageView)
-
-                        val shuffledCountryNames = playCountryNames.shuffled()
-                        for (i in buttons.indices) {
-                            buttons[i].text = shuffledCountryNames[i]
-                            buttons[i].setBackgroundColor(Color.parseColor("#2E8DFF"))
-                        }
-
-                        // Agregar el país seleccionado a la lista de países seleccionados
-                        selectedCountries.add(correctCountry)
+                    val shuffledCountryNames = playCountryNames.shuffled()
+                    for (i in buttons.indices) {
+                        buttons[i].text = shuffledCountryNames[i]
+                        buttons[i].setBackgroundColor(Color.parseColor("#2E8DFF"))
                     }
-                }
+                    selectedCountries.add(correctCountry)
+                    }
             }
         }.addOnFailureListener { e ->
             Log.e("FirebaseError", "Error al obtener datos", e)

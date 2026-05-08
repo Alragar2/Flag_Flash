@@ -1,5 +1,6 @@
 package alragar2.isi3.uv.flagflash
 
+import alragar2.isi3.uv.flagflash.ranking.Player
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.tasks.await

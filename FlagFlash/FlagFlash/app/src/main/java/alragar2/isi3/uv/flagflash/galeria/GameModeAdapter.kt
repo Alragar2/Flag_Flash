@@ -1,4 +1,5 @@
-package alragar2.isi3.uv.flagflash
+package alragar2.isi3.uv.flagflash.galeria
+import alragar2.isi3.uv.flagflash.R
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

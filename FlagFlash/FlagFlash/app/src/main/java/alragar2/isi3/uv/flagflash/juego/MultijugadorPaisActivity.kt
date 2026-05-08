@@ -1,7 +1,8 @@
-package alragar2.isi3.uv.flagflash
+package alragar2.isi3.uv.flagflash.juego
 
-import alragar2.isi3.uv.flagflash.BaseDatos.PaisDatabase
-import alragar2.isi3.uv.flagflash.BaseDatos.PaisDao
+import alragar2.isi3.uv.flagflash.musica.MusicService
+import alragar2.isi3.uv.flagflash.R
+import alragar2.isi3.uv.flagflash.resultado.VictoriaMJActivity2
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -18,7 +19,6 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.room.Room
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.firebase.database.DatabaseReference
@@ -26,8 +26,6 @@ import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlin.random.Random
 
 class MultijugadorPaisActivity : AppCompatActivity() {
     private lateinit var bandera1: ImageView
@@ -46,7 +44,6 @@ class MultijugadorPaisActivity : AppCompatActivity() {
     private lateinit var progressBar2: ProgressBar
     private lateinit var progressText: TextView
     private lateinit var progressText2: TextView
-    private lateinit var paisDao: PaisDao
     private lateinit var vibrator: Vibrator
     private lateinit var paisTextView: TextView
     private lateinit var paisTextView2: TextView
@@ -105,7 +102,12 @@ class MultijugadorPaisActivity : AppCompatActivity() {
                             setImageViewsEnabled(false)
                             playCorrectAnswerSound()
                             // Incrementar la puntuación del jugador correspondiente
-                            if (bandera.id in setOf(R.id.bandera1, R.id.bandera2, R.id.bandera3, R.id.bandera4)) {
+                            if (bandera.id in setOf(
+                                    R.id.bandera1,
+                                    R.id.bandera2,
+                                    R.id.bandera3,
+                                    R.id.bandera4
+                                )) {
                                 player1Score++
                                 updateUI {
                                     player1ScoreView.text = player1Score.toString()
@@ -148,7 +150,12 @@ class MultijugadorPaisActivity : AppCompatActivity() {
                             }
 
                         } else {
-                            if (bandera.id in setOf(R.id.bandera1, R.id.bandera2, R.id.bandera3, R.id.bandera4)) {
+                            if (bandera.id in setOf(
+                                    R.id.bandera1,
+                                    R.id.bandera2,
+                                    R.id.bandera3,
+                                    R.id.bandera4
+                                )) {
                                 updateUI {
                                     tickImageView.setImageResource(R.drawable.tick_rojo) // Mostrar tick rojo en tickImageView
                                     vibrateDevice()

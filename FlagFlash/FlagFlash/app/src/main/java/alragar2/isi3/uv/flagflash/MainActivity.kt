@@ -17,6 +17,12 @@ import android.widget.TextView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.tasks.await
+import alragar2.isi3.uv.flagflash.authentication.AuthenticationLoginActivity
+import alragar2.isi3.uv.flagflash.galeria.GaleriaActivity
+import alragar2.isi3.uv.flagflash.musica.MusicService
+import alragar2.isi3.uv.flagflash.ranking.RankingActivity
+import alragar2.isi3.uv.flagflash.resultado.ElegirJugarActivity
+import alragar2.isi3.uv.flagflash.resultado.ElegirMultijugarActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -89,6 +95,9 @@ class MainActivity : AppCompatActivity() {
                 Log.i("Ads", "onAdClosed")
             }
         }
+
+        // Preload Interstitial Ad
+        InterstitialAdManager.loadAd(this)
 
         val jugarButton = findViewById<Button>(R.id.Jugar)
         jugarButton.setOnClickListener {

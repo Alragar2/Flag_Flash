@@ -1,5 +1,6 @@
-package alragar2.isi3.uv.flagflash
+package alragar2.isi3.uv.flagflash.ranking
 
+import alragar2.isi3.uv.flagflash.R
 import android.annotation.SuppressLint
 import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater

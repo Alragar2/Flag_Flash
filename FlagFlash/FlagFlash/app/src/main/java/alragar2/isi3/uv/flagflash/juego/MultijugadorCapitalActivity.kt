@@ -1,7 +1,8 @@
-package alragar2.isi3.uv.flagflash
+package alragar2.isi3.uv.flagflash.juego
 
-import alragar2.isi3.uv.flagflash.BaseDatos.PaisDatabase
-import alragar2.isi3.uv.flagflash.BaseDatos.PaisDao
+import alragar2.isi3.uv.flagflash.musica.MusicService
+import alragar2.isi3.uv.flagflash.R
+import alragar2.isi3.uv.flagflash.resultado.VictoriaMJActivity
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.Context
@@ -18,7 +19,6 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.room.Room
 import com.bumptech.glide.Glide
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -27,7 +27,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MultijugadorBanderaActivity : AppCompatActivity() {
+
+class MultijugadorCapitalActivity : AppCompatActivity() {
     private var correctCountry = ""
     private var player1Score = 0
     private var player2Score = 0
@@ -43,7 +44,7 @@ class MultijugadorBanderaActivity : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.multijugador_bandera)
+        setContentView(R.layout.multijugador_capital)
 
         databaseReference = FirebaseDatabase.getInstance("https://flag-flash-tfg-default-rtdb.europe-west1.firebasedatabase.app/").reference
         vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
@@ -107,7 +108,7 @@ class MultijugadorBanderaActivity : AppCompatActivity() {
                             if (correctGuesses == 14) {
                                 // Pasar las puntuaciones de los jugadores a VictoriaMJActivity
                                 updateUI {
-                                    val intent = Intent(this@MultijugadorBanderaActivity, VictoriaMJActivity::class.java)
+                                    val intent = Intent(this@MultijugadorCapitalActivity, VictoriaMJActivity::class.java)
                                     intent.putExtra("player1Score", player1Score)
                                     intent.putExtra("player2Score", player2Score)
                                     startActivity(intent)
@@ -144,47 +145,50 @@ class MultijugadorBanderaActivity : AppCompatActivity() {
     private val selectedCountries = mutableListOf<String>()
 
     private fun updateButtons() {
+
         databaseReference.child("paises").get().addOnSuccessListener { dataSnapshot ->
-            if (dataSnapshot.exists()){
-                val countryNames = mutableListOf<String>()
-                for (countrySnapshot in dataSnapshot.children){
-                    val countryName = countrySnapshot.child("nombre").getValue(String::class.java)
-                    if (countryName != null){
-                        countryNames.add(countryName)
-                    }
+            if (dataSnapshot.exists()) {
+                val countryCapitalNames = mutableListOf<String>()
+                for (countrySnapshot in dataSnapshot.children) {
+                    val capital = countrySnapshot.child("capital").value.toString()
+                    countryCapitalNames.add(capital)
                 }
 
-                if (countryNames.size < 4) {
+                if (countryCapitalNames.size < 4) {
                     return@addOnSuccessListener
                 }
 
-                val playCountryNames = mutableListOf<String>()
+                val playCapitalNames = mutableListOf<String>()
 
-                while (playCountryNames.size < 4) {
-                    val randomCountryName = countryNames.random()
-                    if (randomCountryName !in playCountryNames && randomCountryName !in selectedCountries) {
-                        playCountryNames.add(randomCountryName)
+                while (playCapitalNames.size < 4) {
+                    val randomCapital = countryCapitalNames.random()
+                    if (randomCapital !in playCapitalNames && randomCapital != correctCountry) {
+                        playCapitalNames.add(randomCapital)
                     }
                 }
 
-                correctCountry = playCountryNames.random()
-                val paisSnapshot = dataSnapshot.children.first { it.child("nombre").getValue(String::class.java) == correctCountry }
-                val banderaUrl = paisSnapshot.child("bandera").getValue(String::class.java)
+                correctCountry = playCapitalNames.random()
+                val capitalSnapshot = dataSnapshot.children.find { it.child("capital").value == correctCountry }
+                val countryName = capitalSnapshot?.child("nombre")?.value.toString()
+                val banderaURL = capitalSnapshot?.child("bandera")?.value.toString()
 
                 updateUI {
                     val imageView = findViewById<ImageView>(R.id.bandera)
                     val imageView2 = findViewById<ImageView>(R.id.bandera2)
                     Glide.with(this)
-                        .load(banderaUrl)
+                        .load(banderaURL)
                         .into(imageView)
                     Glide.with(this)
-                        .load(banderaUrl)
+                        .load(banderaURL)
                         .into(imageView2)
+                    val textView = findViewById<TextView>(R.id.nombre_pais1)
+                    val textView2 = findViewById<TextView>(R.id.nombre_pais2)
+                    textView.text = countryName
+                    textView2.text = countryName
 
-                    // Mostrar el nombre del país en la parte inferior de la pantalla
-                    val shuffledCountryNames = playCountryNames.shuffled()
+                    val shuffledCapitalNames = playCapitalNames.shuffled()
                     for (i in buttons.indices) {
-                        buttons[i].text = shuffledCountryNames[i % shuffledCountryNames.size]
+                        buttons[i].text = shuffledCapitalNames[i % shuffledCapitalNames.size]
                     }
 
                     selectedCountries.add(correctCountry)
@@ -192,7 +196,8 @@ class MultijugadorBanderaActivity : AppCompatActivity() {
             }
         }
     }
-    
+
+
     private fun vibrateDevice() {
         if (vibrator.hasVibrator()) {
             if (Build.VERSION.SDK_INT >= 26) {
