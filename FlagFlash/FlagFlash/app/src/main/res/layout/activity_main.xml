@@ -5,43 +5,55 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:background="@color/background"
-    >
+    android:background="@color/background">
 
+    <!-- Contador de Monedas -->
+    <LinearLayout
+        android:id="@+id/coinsContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/search_view_background"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/moneda" />
+
+        <TextView
+            android:id="@+id/tvMainCoins"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="0"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/Options"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:backgroundTint="#2E8DFF"
-        app:cornerRadius="8dp"
         android:text="Opciones"
-        android:visibility="visible"
+        app:cornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/CerrarSesion"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:backgroundTint="#E91E63"
-        app:cornerRadius="8dp"
-        android:text="Cerrar Sesión"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
 
     <ImageView
         android:id="@+id/bandera"
         android:layout_width="214dp"
         android:layout_height="214dp"
-        android:src="@drawable/logo"
+        android:src="@drawable/icono"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,12 +63,12 @@
     <Button
         android:id="@+id/Jugar"
         android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="60dp"
         android:layout_marginEnd="60dp"
-        android:layout_height="wrap_content"
+        android:backgroundTint="#2E8DFF"
         android:text="Jugar"
         app:cornerRadius="8dp"
-        android:backgroundTint="#2E8DFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -65,11 +77,11 @@
     <Button
         android:id="@+id/Multijugador"
         android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="60dp"
         android:layout_marginEnd="60dp"
-        android:layout_height="wrap_content"
-        android:text="Multijugador"
         android:backgroundTint="#2E8DFF"
+        android:text="Multijugador"
         app:cornerRadius="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -80,11 +92,11 @@
     <Button
         android:id="@+id/Galeria"
         android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="60dp"
         android:layout_marginEnd="60dp"
-        android:layout_height="wrap_content"
-        android:text="Galería"
         android:backgroundTint="#2E8DFF"
+        android:text="Galería"
         app:cornerRadius="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -95,11 +107,11 @@
     <Button
         android:id="@+id/Ranking"
         android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="60dp"
         android:layout_marginEnd="60dp"
-        android:layout_height="wrap_content"
-        android:text="Ranking"
         android:backgroundTint="#2E8DFF"
+        android:text="Ranking"
         app:cornerRadius="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -107,20 +119,31 @@
         app:layout_constraintTop_toBottomOf="@+id/Galeria"
         app:layout_constraintVertical_bias="0.05" />
 
-
-
+    <Button
+        android:id="@+id/Tienda"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="60dp"
+        android:layout_marginEnd="60dp"
+        android:backgroundTint="#FF9800"
+        android:text="Tienda"
+        app:cornerRadius="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Ranking"
+        app:layout_constraintVertical_bias="0.05" />
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
         android:layout_marginTop="150dp"
         app:adSize="BANNER"
-        app:adUnitId="ca-app-pub-6281701644214410/8821447423"
+        app:adUnitId="ca-app-pub-6281701644214410/1608017752"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Galeria" />
+        app:layout_constraintTop_toBottomOf="@+id/Tienda" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

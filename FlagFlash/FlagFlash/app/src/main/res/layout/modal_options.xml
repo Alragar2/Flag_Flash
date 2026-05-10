@@ -1,55 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:padding="15dp"
-    android:background="@android:color/white"
-    app:layout_constraintWidth_percent="0.9">
+    android:background="@android:color/white">
 
     <TextView
         android:id="@+id/modalNombreUsuario"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pepe"
-        android:paddingBottom="8dp"
-        android:paddingEnd="20dp"
+        android:text="Nombre"
         android:textColor="@android:color/black"
-        android:textSize="30sp"
+        android:textSize="22sp"
+        android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/modalPuntuacion"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="4000"
-        android:paddingBottom="8dp"
-        android:paddingStart="20dp"
-        android:textSize="30sp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <Button
-        android:id="@+id/modalIniciarSesion"
+    <LinearLayout
+        android:id="@+id/statsContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Iniciar Sesión"
-        android:visibility="visible"
-        android:backgroundTint="#2E8DFF"
-        app:layout_constraintTop_toBottomOf="@+id/modalNombreUsuario"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toBottomOf="@id/modalNombreUsuario">
+
+        <ImageView
+            android:id="@+id/modalPointsIcon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/points" />
+        <TextView
+            android:id="@+id/modalPuntuacion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textSize="18sp"
+            android:layout_marginEnd="20dp"
+            />
+
+        <ImageView
+            android:id="@+id/modalCoinsIcon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/moneda" />
+
+        <TextView
+            android:id="@+id/modalMonedas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textColor="#E9AC12"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#EEEEEE"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/statsContainer" />
+
+    <!-- Sección de Alimento -->
+    <LinearLayout
+        android:id="@+id/foodSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/divider1">
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/alimento" />
+
+        <TextView
+            android:id="@+id/modalFoodCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Alimento: 0"
+            android:layout_marginStart="8dp"
+            android:textSize="16sp" />
+
+        <View android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/modalBtnFeed"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="Alimentar"
+            android:textSize="12sp"
+            android:padding="0dp"
+            android:backgroundTint="#4CAF50" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#EEEEEE"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/foodSection" />
+
+    <!-- Mascotas Poseídas -->
+    <TextView
+        android:id="@+id/modalOwnedPetsTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mis Mascotas (Toca para activar)"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/divider2"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/modalPetsContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/modalOwnedPetsTitle">
+        
+        <ImageView
+            android:id="@+id/petIconBuho"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/buho"
+            android:alpha="0.3"
+            android:layout_margin="10dp"
+            android:padding="4dp" />
+            
+        <ImageView
+            android:id="@+id/petIconGato"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/gatito"
+            android:alpha="0.3"
+            android:layout_margin="10dp"
+            android:padding="4dp" />
+            
+        <ImageView
+            android:id="@+id/petIconTortuga"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/tortuguita"
+            android:alpha="0.3"
+            android:layout_margin="10dp"
+            android:padding="4dp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/modalPetStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Estado: Sin seleccionar"
+        android:gravity="center"
+        android:textSize="14sp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toBottomOf="@id/modalPetsContainer" />
 
     <Button
         android:id="@+id/modalCerrarSesion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Cerrar Sesión"
-        android:visibility="gone"
         android:backgroundTint="#FF2E2E"
-        app:layout_constraintTop_toBottomOf="@+id/modalIniciarSesion"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/modalPetStatus"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -58,9 +181,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Eliminar Cuenta"
-        android:visibility="gone"
         android:backgroundTint="#990000"
         app:layout_constraintTop_toBottomOf="@+id/modalCerrarSesion"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

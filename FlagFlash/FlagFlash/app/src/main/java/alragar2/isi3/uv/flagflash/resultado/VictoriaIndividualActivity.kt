@@ -12,8 +12,10 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import java.util.Locale
 
 class VictoriaIndividualActivity : AppCompatActivity() {
 
@@ -25,24 +27,49 @@ class VictoriaIndividualActivity : AppCompatActivity() {
         setContentView(R.layout.activity_victoria_ind)
 
         selectedContinent = intent.getStringExtra("selectedContinent")
+        val timeElapsed = intent.getLongExtra("timeElapsed", 0)
+        val mistakes = intent.getIntExtra("mistakes", 0)
+        val originActivity = intent.getStringExtra("originActivity") ?: "MainActivity"
 
         mediaPlayer = MediaPlayer.create(this, R.raw.win)
         mediaPlayer.start()
 
         val userPreferences = UserPreferences(this)
+        
+        // 1. Mostrar Puntuación Total Ganada
         userPreferences.getScore { finalScore ->
             userPreferences.getInitialScore().let { initialScore ->
                 val score = finalScore - initialScore
-                val scoreTextView: TextView = findViewById(R.id.puntos)
-                scoreTextView.text = score.toString()
+                findViewById<TextView>(R.id.puntos).text = score.toString()
             }
         }
 
+        // 2. Formatear y Mostrar Tiempo
+        val minutes = timeElapsed / 60
+        val seconds = timeElapsed % 60
+        findViewById<TextView>(R.id.tvTiempo).text = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
+
+        // 3. Calcular y Mostrar Precisión
+        val precision = if (10 + mistakes > 0) {
+            (10.0 / (10.0 + mistakes) * 100).toInt()
+        } else 100
+        findViewById<TextView>(R.id.tvPrecision).text = "$precision%"
+
+        // 4. Gestionar Monedas
+        val coinsGained = 10
+        val tvXP = findViewById<TextView>(R.id.experiencia)
+        tvXP.text = "Monedas Ganadas: +$coinsGained"
+        
+        userPreferences.getCoins { currentCoins ->
+            userPreferences.setCoins(currentCoins + coinsGained)
+        }
+
+        // 5. Barra de "Progreso/XP"
+        val progressBar = findViewById<ProgressBar>(R.id.xpProgressBar)
+        progressBar.progress = precision 
+
         val backToMainButton = findViewById<Button>(R.id.backToMainButton)
         val playAgainButton = findViewById<Button>(R.id.playAgainButton)
-
-        // Get the origin activity from the intent
-        val originActivity = intent.getStringExtra("originActivity") ?: "MainActivity"
 
         backToMainButton.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
@@ -67,14 +94,8 @@ class VictoriaIndividualActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Iniciar el servicio de música
         val musicIntent = Intent(this, MusicService::class.java)
         startService(musicIntent)
-    }
-
-    // No detener el servicio de música en onPause
-    override fun onPause() {
-        super.onPause()
     }
 
     override fun onDestroy() {

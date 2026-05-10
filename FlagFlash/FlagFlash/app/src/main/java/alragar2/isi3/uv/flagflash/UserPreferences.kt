@@ -11,25 +11,14 @@ class UserPreferences(context: Context) {
     private val firestore = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
 
-    // Get the score from the Firestore database
     fun getScore(onComplete: (Int) -> Unit) {
         val userId = auth.currentUser?.uid
         if (userId != null) {
             firestore.collection("users").document(userId).get().addOnSuccessListener { documentSnapshot ->
-                if (documentSnapshot.exists()) {
-                    val score = documentSnapshot.getLong("score")?.toInt() ?: 0
-                    onComplete(score)
-                    Log.d("ScorePreferences", "Score get: $score")
-                } else {
-                    onComplete(0)
-                }
-            }.addOnFailureListener {
-                onComplete(0)
-            }
-        } else {
-            onComplete(0)
-        }
-
+                val score = documentSnapshot.getLong("score")?.toInt() ?: 0
+                onComplete(score)
+            }.addOnFailureListener { onComplete(0) }
+        } else { onComplete(0) }
     }
 
     fun setScore(score: Int) {
@@ -37,7 +26,107 @@ class UserPreferences(context: Context) {
         if (userId != null) {
             val userScore = hashMapOf("score" to score)
             firestore.collection("users").document(userId).set(userScore, SetOptions.merge())
-            Log.d("ScorePreferences", "Score set: $score")
+        }
+    }
+
+    fun getCoins(onComplete: (Int) -> Unit) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            firestore.collection("users").document(userId).get().addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    if (documentSnapshot.contains("coins")) {
+                        val coins = documentSnapshot.getLong("coins")?.toInt() ?: 0
+                        onComplete(coins)
+                    } else {
+                        val initialCoins = 100
+                        setCoins(initialCoins)
+                        onComplete(initialCoins)
+                    }
+                } else { onComplete(0) }
+            }.addOnFailureListener { onComplete(0) }
+        } else { onComplete(0) }
+    }
+
+    fun setCoins(coins: Int) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            val userCoins = hashMapOf("coins" to coins)
+            firestore.collection("users").document(userId).set(userCoins, SetOptions.merge())
+        }
+    }
+
+    fun getSelectedPet(onComplete: (String?) -> Unit) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            firestore.collection("users").document(userId).get().addOnSuccessListener { documentSnapshot ->
+                onComplete(documentSnapshot.getString("selectedPet"))
+            }.addOnFailureListener { onComplete(null) }
+        } else { onComplete(null) }
+    }
+
+    fun setSelectedPet(petId: String?) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            val data = hashMapOf("selectedPet" to petId)
+            firestore.collection("users").document(userId).set(data, SetOptions.merge())
+        }
+    }
+
+    fun getOwnedPets(onComplete: (List<String>) -> Unit) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            firestore.collection("users").document(userId).get().addOnSuccessListener { documentSnapshot ->
+                val pets = documentSnapshot.get("ownedPets") as? List<String> ?: emptyList()
+                onComplete(pets)
+            }.addOnFailureListener { onComplete(emptyList()) }
+        } else { onComplete(emptyList()) }
+    }
+
+    fun addOwnedPet(petId: String) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            getOwnedPets { currentPets ->
+                if (!currentPets.contains(petId)) {
+                    val newPets = currentPets.toMutableList()
+                    newPets.add(petId)
+                    val data = hashMapOf("ownedPets" to newPets)
+                    firestore.collection("users").document(userId).set(data, SetOptions.merge())
+                }
+            }
+        }
+    }
+
+    fun getFoodCount(onComplete: (Int) -> Unit) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            firestore.collection("users").document(userId).get().addOnSuccessListener { documentSnapshot ->
+                onComplete(documentSnapshot.getLong("foodCount")?.toInt() ?: 0)
+            }.addOnFailureListener { onComplete(0) }
+        } else { onComplete(0) }
+    }
+
+    fun setFoodCount(count: Int) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            val data = hashMapOf("foodCount" to count)
+            firestore.collection("users").document(userId).set(data, SetOptions.merge())
+        }
+    }
+
+    fun isPetFed(onComplete: (Boolean) -> Unit) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            firestore.collection("users").document(userId).get().addOnSuccessListener { documentSnapshot ->
+                onComplete(documentSnapshot.getBoolean("petFed") ?: false)
+            }.addOnFailureListener { onComplete(false) }
+        } else { onComplete(false) }
+    }
+
+    fun setPetFed(fed: Boolean) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            val data = hashMapOf("petFed" to fed)
+            firestore.collection("users").document(userId).set(data, SetOptions.merge())
         }
     }
 
@@ -53,19 +142,9 @@ class UserPreferences(context: Context) {
         val userId = auth.currentUser?.uid
         if (userId != null) {
             firestore.collection("users").document(userId).get().addOnSuccessListener { documentSnapshot ->
-                if (documentSnapshot.exists()) {
-                    val name = documentSnapshot.getString("name") ?: "Unknown"
-                    onComplete(name)
-                    Log.d("ScorePreferences", "Name get: $name")
-                } else {
-                    onComplete("Unknown")
-                }
-            }.addOnFailureListener {
-                onComplete("Unknown")
-            }
-        } else {
-            onComplete("Unknown")
-        }
+                onComplete(documentSnapshot.getString("name") ?: "Unknown")
+            }.addOnFailureListener { onComplete("Unknown") }
+        } else { onComplete("Unknown") }
     }
 
     fun setUserName(name: String) {
@@ -73,7 +152,6 @@ class UserPreferences(context: Context) {
         if (userId != null) {
             val userName = hashMapOf("name" to name)
             firestore.collection("users").document(userId).set(userName, SetOptions.merge())
-            Log.d("ScorePreferences", "Name set: $name")
         }
     }
 }

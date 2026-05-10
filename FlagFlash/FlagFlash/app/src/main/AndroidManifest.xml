@@ -4,6 +4,18 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
+
+    <queries>
+        <package android:name="com.google.android.gms" />
+        <intent>
+            <action android:name="com.google.android.gms.ads.AdService" />
+        </intent>
+        <intent>
+            <action android:name="com.google.android.gms.ads.BIND_AD_SERVICE" />
+        </intent>
+    </queries>
 
     <application
         android:name=".App"
@@ -63,19 +75,11 @@
             android:screenOrientation="portrait"
             android:exported="false"/>
 
-        <activity android:name=".resultado.PaisAdapter"
-            android:screenOrientation="portrait"
-            android:exported="false"/>
-
         <activity android:name=".resultado.VictoriaIndividualActivity"
             android:screenOrientation="portrait"
             android:exported="false"/>
 
         <activity android:name=".resultado.DerrotaIndividualActivity"
-            android:screenOrientation="portrait"
-            android:exported="false"/>
-
-        <activity android:name=".UserPreferences"
             android:screenOrientation="portrait"
             android:exported="false"/>
 
@@ -95,12 +99,17 @@
             android:screenOrientation="portrait"
             android:exported="false"/>
 
+        <activity android:name=".TiendaActivity"
+            android:screenOrientation="portrait"
+            android:exported="false"/>
+
         <activity android:name=".authentication.AuthenticationRegisterActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"
+            android:exported="false" />
 
         <activity android:name=".authentication.AuthenticationLoginActivity"
-            android:screenOrientation="portrait"></activity>
-
+            android:screenOrientation="portrait"
+            android:exported="false" />
 
         <activity
             android:name=".MainActivity"
@@ -121,5 +130,4 @@
         </service>
 
     </application>
-    <uses-permission android:name="android.permission.VIBRATE"/>
 </manifest>

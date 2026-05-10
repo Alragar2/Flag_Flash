@@ -22,6 +22,7 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.DatabaseReference
@@ -38,6 +39,8 @@ class JuegoPaisActivity: AppCompatActivity() {
     private lateinit var paisTextView: TextView
     private var correctCountry = ""
     private var correctGesses = 0
+    private var mistakes = 0
+    private var startTime: Long = 0
     private lateinit var progressBar: ProgressBar
     private lateinit var progressText: TextView
     private var lives = 3
@@ -51,26 +54,41 @@ class JuegoPaisActivity: AppCompatActivity() {
     private var scoreReal = 0
     private var selectedContinent: String? = null
 
+    // Mascotas
+    private lateinit var userPreferences: UserPreferences
+    private var activePet: String? = null
+    private var isPetFed = false
+    private lateinit var ivPetActive: ImageView
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.juego_pais)
 
+        startTime = System.currentTimeMillis()
         InterstitialAdManager.showAdWithProbability(this, 0.4f)
 
         selectedContinent = intent.getStringExtra("selectedContinent")
+        userPreferences = UserPreferences(this)
+        
+        ivPetActive = findViewById(R.id.ivPetActive)
+
+        // Cargar Mascota
+        userPreferences.getSelectedPet { pet ->
+            activePet = pet
+            userPreferences.isPetFed { fed ->
+                isPetFed = fed
+                updatePetUI()
+            }
+        }
 
         tickImageView = findViewById(R.id.tick)
-
         bandera1 = findViewById(R.id.bandera)
         bandera2 = findViewById(R.id.bandera2)
         bandera3 = findViewById(R.id.bandera3)
         bandera4 = findViewById(R.id.bandera4)
         paisTextView = findViewById(R.id.pais)
 
-        // Initialize Firestore
-        val userPreferences = UserPreferences(this)
         userPreferences.getScore { score ->
             userPreferences.setInitialScore(score)
             scoreTextView = findViewById(R.id.puntuacion)
@@ -93,38 +111,8 @@ class JuegoPaisActivity: AppCompatActivity() {
             findViewById(R.id.corazon3)
         )
 
-        fun playCorrectAnswerSound() {
-            val mediaPlayer = MediaPlayer
-                .create(this, R.raw.correct_answer)
-            mediaPlayer.start()
-        }
-
-        fun playWrongAnswerSound() {
-            val mediaPlayer = MediaPlayer
-                .create(this, R.raw.wrong_answer)
-            mediaPlayer.start()
-        }
-
         updateImages()
-
         userScoreManager = UserScoreManager()
-
-        @RequiresApi(Build.VERSION_CODES.O)
-        fun vibrateDevice(context: Context) {
-            val vibrator = context
-                .getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            if (vibrator.hasVibrator()) {
-                if (Build.VERSION.SDK_INT >= 26) {
-                    val vibrationEffect = VibrationEffect
-                        .createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE)
-                    vibrator.vibrate(vibrationEffect)
-                } else {
-                    @Suppress("DEPRECATION")
-                    vibrator.vibrate(500)
-                }
-            }
-        }
-
 
         for (bandera in banderas) {
             bandera.setOnClickListener {
@@ -137,62 +125,97 @@ class JuegoPaisActivity: AppCompatActivity() {
                     scoreReal += 10
                     updateScore(userPreferences, 10) {
                         if (correctGesses == 10) {
-                            // Guardar el puntaje del usuario y navegar a la actividad de victoria
                             userPreferences.getScore { score ->
                                 saveUserAndFinish(score)
                             }
-                        }
-                        else {
+                        } else {
                             Handler(Looper.getMainLooper()).postDelayed({
                                 updateImages()
                             }, 1000)
                         }
                     }
                 } else {
+                    playWrongAnswerSound()
+                    mistakes++
+                    
+                    // Habilidad Tortuga (Escudo)
+                    var penalty = -5
+                    if (activePet == "tortuga" && isPetFed) {
+                        penalty = 0
+                        isPetFed = false
+                        userPreferences.setPetFed(false)
+                        updatePetUI()
+                        Toast.makeText(this, "¡Escudo de Tortuga activado!", Toast.LENGTH_SHORT).show()
+                    }
+
                     lives--
-                    scoreReal -= 5
-                    updateScore(userPreferences, -5) {
+                    
+                    // Habilidad Gato (Vida Extra)
+                    if (lives == 0 && activePet == "gato" && isPetFed) {
+                        lives = 1
+                        isPetFed = false
+                        userPreferences.setPetFed(false)
+                        updatePetUI()
+                        Toast.makeText(this, "¡Gato te dio una vida extra!", Toast.LENGTH_SHORT).show()
+                    }
+
+                    scoreReal += penalty
+                    updateScore(userPreferences, penalty) {
                         if (lives == 0) {
                             userPreferences.getScore { score ->
                                 saveUserAndFinish(score)
                             }
                         }
                     }
-                    playWrongAnswerSound()
-                    userPreferences.getScore { score ->
-                        val newScore = score - 5
-                        userPreferences.setScore(newScore)
-                        scoreTextView.text = newScore.toString()
-                    }
+
                     val fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out)
-                    hearts[lives].startAnimation(fadeOut)
-                    hearts[lives].visibility = View.GONE
+                    if (lives >= 0 && hearts.size > lives) {
+                        hearts[lives].startAnimation(fadeOut)
+                        hearts[lives].visibility = View.GONE
+                    }
                     tickImageView.setImageResource(R.drawable.tick_rojo)
                     vibrateDevice(this)
                 }
                 Handler(Looper.getMainLooper()).postDelayed({
                     tickImageView.setImageDrawable(null)
-                    setImageViewsEnabled(true)
+                    if (lives > 0) setImageViewsEnabled(true)
                 }, 1000)
             }
         }
     }
 
-    // Actualiza el puntaje en la interfaz de usuario y en la base de datos
+    private fun updatePetUI() {
+        runOnUiThread {
+            if (activePet != null) {
+                ivPetActive.visibility = View.VISIBLE
+                val iconRes = when(activePet) {
+                    "buho" -> R.drawable.buho
+                    "gato" -> R.drawable.gatito
+                    "tortuga" -> R.drawable.tortuguita
+                    else -> 0
+                }
+                if (iconRes != 0) ivPetActive.setImageResource(iconRes)
+                ivPetActive.alpha = if (isPetFed) 1.0f else 0.4f
+            } else {
+                ivPetActive.visibility = View.GONE
+            }
+        }
+    }
+
     private fun updateScore(userPreferences: UserPreferences, increment: Int, onComplete: () -> Unit) {
         userPreferences.getScore { score ->
             val newScore = score + increment
             userPreferences.setScore(newScore)
             scoreTextView.text = newScore.toString()
-            Log.d("Score", "Puntuación: $newScore")
             onComplete()
         }
     }
 
     private fun saveUserAndFinish(score: Int){
+        val endTime = System.currentTimeMillis()
+        val timeElapsed = (endTime - startTime) / 1000
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         userScoreManager.saveUserScore(userId, score, {
-            // Navegar a la actividad de victoria o derrota
             val intent = if (lives > 0) {
                 Intent(this, VictoriaIndividualActivity::class.java)
             } else {
@@ -200,10 +223,11 @@ class JuegoPaisActivity: AppCompatActivity() {
             }
             intent.putExtra("originActivity", "JuegoPaisActivity")
             intent.putExtra("selectedContinent", selectedContinent)
+            intent.putExtra("timeElapsed", timeElapsed)
+            intent.putExtra("mistakes", mistakes)
             startActivity(intent)
             finish()
         }, {
-            // Manejar el error al guardar los puntos
             Log.e("FirestoreError", "Error al guardar los puntos", it)
         })
     }
@@ -230,8 +254,6 @@ class JuegoPaisActivity: AppCompatActivity() {
                         .preload()
                 }
             }
-        }.addOnFailureListener { e ->
-            Log.e("FirebaseError", "Error al obtener datos", e)
         }
     }
 
@@ -248,7 +270,6 @@ class JuegoPaisActivity: AppCompatActivity() {
                 }
 
                 val playCountryFlags = mutableListOf<String>()
-
                 while (playCountryFlags.size < 4) {
                     val randomFlag = countryFlags.random()
                     if (randomFlag !in playCountryFlags && randomFlag !in selectedCountries) {
@@ -260,7 +281,6 @@ class JuegoPaisActivity: AppCompatActivity() {
                     correctCountry = playCountryFlags.random()
                     val paisSnapshot = dataSnapshot.children.first { it.child("bandera").getValue(String::class.java) == correctCountry }
                     val banderaName = paisSnapshot.child("nombre").getValue(String::class.java)
-
                     paisTextView.text = banderaName
 
                     val shufledFlags = playCountryFlags.shuffled()
@@ -271,15 +291,35 @@ class JuegoPaisActivity: AppCompatActivity() {
                                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                                 .into(banderas[i])
                             banderas[i].tag = shufledFlags[i]
-                            Log.d("JuegoPaisActivity", "Tag Bandera: ${banderas[i].tag}")
                         }
                     }
                 }
                 setImageViewsEnabled(true)
                 selectedCountries.add(correctCountry)
             }
-        }.addOnFailureListener { e ->
-            Log.e("FirebaseError", "Error al obtener datos", e)
+        }
+    }
+
+    private fun playCorrectAnswerSound() {
+        val mediaPlayer = MediaPlayer.create(this, R.raw.correct_answer)
+        mediaPlayer.start()
+    }
+
+    private fun playWrongAnswerSound() {
+        val mediaPlayer = MediaPlayer.create(this, R.raw.wrong_answer)
+        mediaPlayer.start()
+    }
+
+    private fun vibrateDevice(context: Context) {
+        val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        if (vibrator.hasVibrator()) {
+            if (Build.VERSION.SDK_INT >= 26) {
+                val vibrationEffect = VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE)
+                vibrator.vibrate(vibrationEffect)
+            } else {
+                @Suppress("DEPRECATION")
+                vibrator.vibrate(500)
+            }
         }
     }
 }

@@ -11,7 +11,7 @@ import kotlin.random.Random
 object InterstitialAdManager {
     private var mInterstitialAd: InterstitialAd? = null
     private const val TAG = "InterstitialAdManager"
-    private const val AD_UNIT_ID = "ca-app-pub-3940256099942544/1033173712" // Test ID
+    private const val AD_UNIT_ID = "ca-app-pub-6281701644214410/1608017752" // Test ID
 
     fun loadAd(activity: Activity) {
         val adRequest = AdRequest.Builder().build()
