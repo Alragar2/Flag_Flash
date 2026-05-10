@@ -7,7 +7,6 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 
@@ -70,26 +69,16 @@ class TiendaActivity : AppCompatActivity() {
                 userPreferences.setCoins(currentCoins)
                 userPreferences.setFoodCount(foodCount)
                 updateUI()
-                Toast.makeText(this, "¡Alimento comprado!", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "No tienes suficientes monedas", Toast.LENGTH_SHORT).show()
             }
         }
 
         btnFeedPet.setOnClickListener {
-            if (selectedPet == null) {
-                Toast.makeText(this, "Primero elige una mascota", Toast.LENGTH_SHORT).show()
-            } else if (isFed) {
-                Toast.makeText(this, "Tu mascota ya está llena", Toast.LENGTH_SHORT).show()
-            } else if (foodCount > 0) {
+            if (selectedPet != null && !isFed && foodCount > 0) {
                 foodCount -= 1
                 isFed = true
                 userPreferences.setFoodCount(foodCount)
-                userPreferences.setPetFed(true)
+                userPreferences.setPetFed(selectedPet!!, true) // Corregido
                 updateUI()
-                Toast.makeText(this, "¡Mascota alimentada! Habilidad lista.", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "No tienes alimento", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -107,8 +96,12 @@ class TiendaActivity : AppCompatActivity() {
                     selectedPet = pet
                     userPreferences.getOwnedPets { pets ->
                         ownedPets = pets
-                        userPreferences.isPetFed { fed ->
-                            isFed = fed
+                        if (selectedPet != null) {
+                            userPreferences.isPetFed(selectedPet!!) { fed -> // Corregido
+                                isFed = fed
+                                updateUI()
+                            }
+                        } else {
                             updateUI()
                         }
                     }
@@ -121,8 +114,10 @@ class TiendaActivity : AppCompatActivity() {
         if (ownedPets.contains(petId)) {
             selectedPet = petId
             userPreferences.setSelectedPet(petId)
-            Toast.makeText(this, "Mascota seleccionada", Toast.LENGTH_SHORT).show()
-            updateUI()
+            userPreferences.isPetFed(petId) { fed -> // Corregido
+                isFed = fed
+                updateUI()
+            }
         } else {
             if (currentCoins >= 2000) {
                 currentCoins -= 2000
@@ -131,10 +126,9 @@ class TiendaActivity : AppCompatActivity() {
                 ownedPets = ownedPets + petId
                 selectedPet = petId
                 userPreferences.setSelectedPet(petId)
-                Toast.makeText(this, "¡Compra realizada con éxito!", Toast.LENGTH_SHORT).show()
+                isFed = false
+                userPreferences.setPetFed(petId, false) // Corregido
                 updateUI()
-            } else {
-                Toast.makeText(this, "Necesitas 2000 monedas", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -142,10 +136,13 @@ class TiendaActivity : AppCompatActivity() {
     private fun updateUI() {
         runOnUiThread {
             tvCoins.text = currentCoins.toString()
-            tvFoodStock.text = "Tienes: $foodCount"
+            tvFoodStock.text = "x$foodCount"
             
-            if (isFed) {
-                tvPetStatus.text = "Tu mascota está feliz y lista para ayudar"
+            if (selectedPet == null) {
+                tvPetStatus.text = "Selecciona una mascota"
+                tvPetStatus.setTextColor(ContextCompat.getColor(this, android.R.color.darker_gray))
+            } else if (isFed) {
+                tvPetStatus.text = "¡Mascota lista para ayudar!"
                 tvPetStatus.setTextColor(ContextCompat.getColor(this, android.R.color.holo_green_dark))
             } else {
                 tvPetStatus.text = "Tu mascota tiene hambre"
@@ -161,7 +158,7 @@ class TiendaActivity : AppCompatActivity() {
     private fun updatePetButtonState(layout: LinearLayout, textView: TextView, coinIcon: ImageView, petId: String) {
         if (ownedPets.contains(petId)) {
             if (selectedPet == petId) {
-                textView.text = "Seleccionada"
+                textView.text = "Activa"
                 coinIcon.visibility = View.GONE
                 layout.isEnabled = false
                 layout.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, android.R.color.darker_gray))
@@ -169,7 +166,7 @@ class TiendaActivity : AppCompatActivity() {
                 textView.text = "Elegir"
                 coinIcon.visibility = View.GONE
                 layout.isEnabled = true
-                layout.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.purple))
+                layout.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.backgroundButton))
             }
         } else {
             textView.text = "2000"

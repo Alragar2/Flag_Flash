@@ -113,20 +113,25 @@ class UserPreferences(context: Context) {
         }
     }
 
-    fun isPetFed(onComplete: (Boolean) -> Unit) {
+    fun isPetFed(petId: String, onComplete: (Boolean) -> Unit) {
         val userId = auth.currentUser?.uid
         if (userId != null) {
             firestore.collection("users").document(userId).get().addOnSuccessListener { documentSnapshot ->
-                onComplete(documentSnapshot.getBoolean("petFed") ?: false)
+                val fedStates = documentSnapshot.get("petFedStates") as? Map<String, Boolean> ?: emptyMap()
+                onComplete(fedStates[petId] ?: false)
             }.addOnFailureListener { onComplete(false) }
         } else { onComplete(false) }
     }
 
-    fun setPetFed(fed: Boolean) {
+    fun setPetFed(petId: String, fed: Boolean) {
         val userId = auth.currentUser?.uid
         if (userId != null) {
-            val data = hashMapOf("petFed" to fed)
-            firestore.collection("users").document(userId).set(data, SetOptions.merge())
+            firestore.collection("users").document(userId).get().addOnSuccessListener { documentSnapshot ->
+                val fedStates = (documentSnapshot.get("petFedStates") as? Map<String, Boolean> ?: emptyMap()).toMutableMap()
+                fedStates[petId] = fed
+                val data = hashMapOf("petFedStates" to fedStates)
+                firestore.collection("users").document(userId).set(data, SetOptions.merge())
+            }
         }
     }
 

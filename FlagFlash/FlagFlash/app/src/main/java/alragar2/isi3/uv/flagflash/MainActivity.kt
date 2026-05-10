@@ -12,10 +12,13 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.firebase.auth.FirebaseAuth
 import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import alragar2.isi3.uv.flagflash.authentication.AuthenticationLoginActivity
 import alragar2.isi3.uv.flagflash.galeria.GaleriaActivity
 import alragar2.isi3.uv.flagflash.musica.MusicService
@@ -31,6 +34,7 @@ class MainActivity : AppCompatActivity() {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private lateinit var tvMainCoins: TextView
     private lateinit var userPreferences: UserPreferences
+    private var modalListener: ListenerRegistration? = null
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -108,63 +112,16 @@ class MainActivity : AppCompatActivity() {
     private fun showOptionsModal() {
         val dialog = Dialog(this)
         dialog.setContentView(R.layout.modal_options)
-
-        val nombre = dialog.findViewById<TextView>(R.id.modalNombreUsuario)
-        val score = dialog.findViewById<TextView>(R.id.modalPuntuacion)
-        val modalMonedas = dialog.findViewById<TextView>(R.id.modalMonedas)
-        val modalFoodCount = dialog.findViewById<TextView>(R.id.modalFoodCount)
-        val modalBtnFeed = dialog.findViewById<Button>(R.id.modalBtnFeed)
-        val modalPetStatus = dialog.findViewById<TextView>(R.id.modalPetStatus)
-        
-        val petIconBuho = dialog.findViewById<ImageView>(R.id.petIconBuho)
-        val petIconGato = dialog.findViewById<ImageView>(R.id.petIconGato)
-        val petIconTortuga = dialog.findViewById<ImageView>(R.id.petIconTortuga)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
         val user = FirebaseAuth.getInstance().currentUser
         if (user != null) {
-            db.collection("users").document(user.uid).get()
-                .addOnSuccessListener { document ->
-                    if (document != null && document.exists()) {
-                        nombre.text = document.getString("name") ?: "Jugador"
-                        score.text = "Puntos: " + (document.getLong("score")?.toString() ?: "0")
-                        val coins = document.getLong("coins")?.toInt() ?: 100
-                        modalMonedas.text = "Monedas: $coins"
-                        tvMainCoins.text = coins.toString()
-
-                        val food = document.getLong("foodCount")?.toInt() ?: 0
-                        modalFoodCount.text = "Alimento: $food"
-
-                        val selectedPet = document.getString("selectedPet")
-                        val isFed = document.getBoolean("petFed") ?: false
-                        val ownedPets = document.get("ownedPets") as? List<String> ?: emptyList()
-
-                        modalPetStatus.text = if (selectedPet != null) {
-                            "Mascota: ${selectedPet.capitalize()} " + (if (isFed) "(Alimentada)" else "(Hambrienta)")
-                        } else {
-                            "Estado: Sin seleccionar"
-                        }
-
-                        // Configurar iconos de mascotas
-                        setupPetIcon(petIconBuho, "buho", selectedPet, ownedPets)
-                        setupPetIcon(petIconGato, "gato", selectedPet, ownedPets)
-                        setupPetIcon(petIconTortuga, "tortuga", selectedPet, ownedPets)
-
-                        modalBtnFeed.setOnClickListener {
-                            if (selectedPet == null) {
-                                Toast.makeText(this, "Selecciona una mascota primero", Toast.LENGTH_SHORT).show()
-                            } else if (isFed) {
-                                Toast.makeText(this, "Ya está alimentada", Toast.LENGTH_SHORT).show()
-                            } else if (food > 0) {
-                                userPreferences.setFoodCount(food - 1)
-                                userPreferences.setPetFed(true)
-                                dialog.dismiss()
-                                showOptionsModal() // Recargar modal
-                                Toast.makeText(this, "¡Mascota alimentada!", Toast.LENGTH_SHORT).show()
-                            } else {
-                                Toast.makeText(this, "No tienes alimento", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    }
+            // USAMOS SNAPSHOT LISTENER: Escucha cambios en tiempo real
+            modalListener = db.collection("users").document(user.uid)
+                .addSnapshotListener { document, error ->
+                    if (error != null || document == null || !document.exists()) return@addSnapshotListener
+                    updateModalUI(dialog, document)
                 }
         }
 
@@ -175,31 +132,102 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
 
-        dialog.findViewById<Button>(R.id.modalEliminarCuenta).setOnClickListener {
-            // Lógica de eliminación (omitida por brevedad, igual que antes)
-            dialog.dismiss()
+        dialog.setOnDismissListener {
+            modalListener?.remove()
+            modalListener = null
         }
 
         dialog.show()
     }
 
-    private fun setupPetIcon(icon: ImageView, petId: String, selectedPet: String?, ownedPets: List<String>) {
-        if (ownedPets.contains(petId)) {
-            icon.alpha = if (selectedPet == petId) 1.0f else 0.5f
-            if (selectedPet == petId) {
-                icon.setBackgroundResource(R.drawable.rounded_corners) // O algún borde para resaltar
+    private fun updateModalUI(dialog: Dialog, document: com.google.firebase.firestore.DocumentSnapshot) {
+        val nombre = dialog.findViewById<TextView>(R.id.modalNombreUsuario)
+        val score = dialog.findViewById<TextView>(R.id.modalPuntuacion)
+        val modalMonedas = dialog.findViewById<TextView>(R.id.modalMonedas)
+        val modalFoodCount = dialog.findViewById<TextView>(R.id.modalFoodCount)
+        val modalBtnFeed = dialog.findViewById<Button>(R.id.modalBtnFeed)
+        val modalPetStatus = dialog.findViewById<TextView>(R.id.modalPetStatus)
+        
+        val containerBuho = dialog.findViewById<View>(R.id.containerBuho)
+        val containerGato = dialog.findViewById<View>(R.id.containerGato)
+        val containerTortuga = dialog.findViewById<View>(R.id.containerTortuga)
+
+        val petIconBuho = dialog.findViewById<ImageView>(R.id.petIconBuho)
+        val petIconGato = dialog.findViewById<ImageView>(R.id.petIconGato)
+        val petIconTortuga = dialog.findViewById<ImageView>(R.id.petIconTortuga)
+
+        val indicatorBuho = dialog.findViewById<ImageView>(R.id.petFedIndicatorBuho)
+        val indicatorGato = dialog.findViewById<ImageView>(R.id.petFedIndicatorGato)
+        val indicatorTortuga = dialog.findViewById<ImageView>(R.id.petFedIndicatorTortuga)
+
+        nombre.text = document.getString("name") ?: "Jugador"
+        score.text = (document.getLong("score")?.toString() ?: "0")
+        val coins = document.getLong("coins")?.toInt() ?: 100
+        modalMonedas.text = coins.toString()
+        tvMainCoins.text = coins.toString()
+
+        val food = document.getLong("foodCount")?.toInt() ?: 0
+        modalFoodCount.text = "x$food"
+
+        val selectedPet = document.getString("selectedPet")
+        val ownedPets = document.get("ownedPets") as? List<String> ?: emptyList()
+        val fedStates = document.get("petFedStates") as? Map<String, Boolean> ?: emptyMap()
+
+        modalPetStatus.text = if (selectedPet != null) {
+            val isFed = fedStates[selectedPet] ?: false
+            "${selectedPet.replaceFirstChar { it.uppercase() }} " + (if (isFed) "(Listo)" else "(Hambriento)")
+        } else {
+            "Ninguna seleccionada"
+        }
+
+        // Configurar iconos y visibilidad de mascotas compradas
+        setupPetInModal(petIconBuho, indicatorBuho, containerBuho, "buho", selectedPet, ownedPets, fedStates)
+        setupPetInModal(petIconGato, indicatorGato, containerGato, "gato", selectedPet, ownedPets, fedStates)
+        setupPetInModal(petIconTortuga, indicatorTortuga, containerTortuga, "tortuga", selectedPet, ownedPets, fedStates)
+
+        modalBtnFeed.setOnClickListener {
+            if (selectedPet != null && food > 0 && !(fedStates[selectedPet] ?: false)) {
+                userPreferences.setFoodCount(food - 1)
+                userPreferences.setPetFed(selectedPet, true)
+                // El SnapshotListener se encargará de refrescar la UI automáticamente
             }
-            icon.setOnClickListener {
-                userPreferences.setSelectedPet(petId)
-                Toast.makeText(this, "Has seleccionado a ${petId.capitalize()}", Toast.LENGTH_SHORT).show()
-                // Recargar el modal para reflejar el cambio (o cerrar y abrir)
-                // Para una mejor UX, podrías actualizar la UI directamente aquí
+        }
+    }
+
+    private fun setupPetInModal(
+        icon: ImageView, 
+        indicator: ImageView, 
+        container: View, 
+        petId: String, 
+        selectedPet: String?, 
+        ownedPets: List<String>, 
+        fedStates: Map<String, Boolean>
+    ) {
+        if (ownedPets.contains(petId)) {
+            container.visibility = View.VISIBLE
+            
+            // Resaltar si está seleccionada
+            if (selectedPet == petId) {
+                icon.alpha = 1.0f
+                container.setBackgroundResource(R.drawable.search_view_background)
+            } else {
+                icon.alpha = 0.4f
+                container.setBackgroundResource(0)
+            }
+
+            // Indicador de "Alimentado" (Tick verde)
+            val isFed = fedStates[petId] ?: false
+            indicator.visibility = if (isFed) View.VISIBLE else View.GONE
+
+            container.setOnClickListener {
+                if (selectedPet != petId) {
+                    userPreferences.setSelectedPet(petId)
+                    // No hace falta Toast ni recargar manualmente, el SnapshotListener lo hará
+                }
             }
         } else {
-            icon.alpha = 0.1f
-            icon.setOnClickListener {
-                Toast.makeText(this, "Compra esta mascota en la tienda", Toast.LENGTH_SHORT).show()
-            }
+            // NO COMPRADA: Desaparece del modal
+            container.visibility = View.GONE
         }
     }
 

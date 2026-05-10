@@ -147,7 +147,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="16dp">
+        android:layout_margin="24dp">
 
         <ImageView
             android:id="@+id/bandera"
@@ -157,8 +157,8 @@
             android:layout_rowWeight="1"
             android:layout_column="0"
             android:layout_columnWeight="1"
-            android:layout_margin="8dp"
-            android:scaleType="centerCrop"
+            android:layout_margin="12dp"
+            android:scaleType="fitCenter"
             android:src="@drawable/bandera_de_espana" />
 
         <ImageView
@@ -169,8 +169,8 @@
             android:layout_rowWeight="1"
             android:layout_column="1"
             android:layout_columnWeight="1"
-            android:layout_margin="8dp"
-            android:scaleType="centerCrop"
+            android:layout_margin="12dp"
+            android:scaleType="fitCenter"
             android:src="@drawable/bandera_de_espana" />
 
         <ImageView
@@ -181,8 +181,8 @@
             android:layout_rowWeight="1"
             android:layout_column="0"
             android:layout_columnWeight="1"
-            android:layout_margin="8dp"
-            android:scaleType="centerCrop"
+            android:layout_margin="12dp"
+            android:scaleType="fitCenter"
             android:src="@drawable/bandera_de_espana" />
 
         <ImageView
@@ -193,8 +193,8 @@
             android:layout_rowWeight="1"
             android:layout_column="1"
             android:layout_columnWeight="1"
-            android:layout_margin="8dp"
-            android:scaleType="centerCrop"
+            android:layout_margin="12dp"
+            android:scaleType="fitCenter"
             android:src="@drawable/bandera_de_espana" />
     </GridLayout>
 

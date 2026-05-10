@@ -26,7 +26,6 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -76,11 +75,15 @@ class JuegoBanderaActivity : AppCompatActivity() {
         ivPetActive = findViewById(R.id.ivPetActive)
         btnOwlAbility = findViewById(R.id.btnOwlAbility)
 
-        // Cargar Mascota
+        // Cargar Mascota y su estado de alimentación individual
         userPreferences.getSelectedPet { pet ->
             activePet = pet
-            userPreferences.isPetFed { fed ->
-                isPetFed = fed
+            if (pet != null) {
+                userPreferences.isPetFed(pet) { fed ->
+                    isPetFed = fed
+                    updatePetUI()
+                }
+            } else {
                 updatePetUI()
             }
         }
@@ -138,7 +141,7 @@ class JuegoBanderaActivity : AppCompatActivity() {
                 }
                 if (iconRes != 0) ivPetActive.setImageResource(iconRes)
                 
-                // Si la mascota está hambrienta, se ve un poco gris
+                // Si la mascota está hambrienta, se ve un poco opaca
                 ivPetActive.alpha = if (isPetFed) 1.0f else 0.4f
                 
                 // Mostrar botón de búho si es el búho y está alimentado
@@ -164,9 +167,8 @@ class JuegoBanderaActivity : AppCompatActivity() {
             }
         }
         isPetFed = false
-        userPreferences.setPetFed(false)
+        activePet?.let { userPreferences.setPetFed(it, false) }
         updatePetUI()
-        Toast.makeText(this, "¡Búho usó Pista!", Toast.LENGTH_SHORT).show()
     }
 
     private fun updateInterface(userPreferences: UserPreferences) {
@@ -204,9 +206,8 @@ class JuegoBanderaActivity : AppCompatActivity() {
                     if (activePet == "tortuga" && isPetFed) {
                         penalty = 0
                         isPetFed = false
-                        userPreferences.setPetFed(false)
+                        userPreferences.setPetFed("tortuga", false)
                         updatePetUI()
-                        Toast.makeText(this, "¡Escudo de Tortuga activado! No pierdes puntos.", Toast.LENGTH_SHORT).show()
                     }
 
                     lives--
@@ -215,9 +216,8 @@ class JuegoBanderaActivity : AppCompatActivity() {
                     if (lives == 0 && activePet == "gato" && isPetFed) {
                         lives = 1
                         isPetFed = false
-                        userPreferences.setPetFed(false)
+                        userPreferences.setPetFed("gato", false)
                         updatePetUI()
-                        Toast.makeText(this, "¡Gato te dio una vida extra!", Toast.LENGTH_SHORT).show()
                     }
 
                     scoreReal += penalty

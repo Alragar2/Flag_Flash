@@ -21,9 +21,11 @@ import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -50,6 +52,13 @@ class JuegoEscudoActivity: AppCompatActivity() {
     private val selectedCountries = mutableListOf<String>()
     private var selectedContinent: String? = null
 
+    // Mascotas
+    private lateinit var userPreferences: UserPreferences
+    private var activePet: String? = null
+    private var isPetFed = false
+    private lateinit var ivPetActive: ImageView
+    private lateinit var btnOwlAbility: ImageButton
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.juego_escudo)
@@ -57,8 +66,23 @@ class JuegoEscudoActivity: AppCompatActivity() {
         InterstitialAdManager.showAdWithProbability(this, 0.4f)
 
         selectedContinent = intent.getStringExtra("selectedContinent")
+        userPreferences = UserPreferences(this)
+        ivPetActive = findViewById(R.id.ivPetActive)
+        btnOwlAbility = findViewById(R.id.btnOwlAbility)
 
-        val userPreferences = UserPreferences(this)
+        // Cargar Mascota
+        userPreferences.getSelectedPet { pet ->
+            activePet = pet
+            if (pet != null) {
+                userPreferences.isPetFed(pet) { fed ->
+                    isPetFed = fed
+                    updatePetUI()
+                }
+            } else {
+                updatePetUI()
+            }
+        }
+
         userPreferences.getScore { score ->
             userPreferences.setInitialScore(score)
             scoreTextView = findViewById(R.id.puntuacion)
@@ -88,15 +112,59 @@ class JuegoEscudoActivity: AppCompatActivity() {
         progressText.text = "0/10"
 
         preloadImages()
-
         updateButtons()
-
         userScoreManager = UserScoreManager()
-
         updateInterface(userPreferences)
+
+        // Habilidad Búho (Pista)
+        btnOwlAbility.setOnClickListener {
+            if (activePet == "buho" && isPetFed) {
+                useOwlAbility()
+            }
+        }
     }
 
-    // Inicializa las imagenes antes de que el usuario empiece a jugar
+    private fun updatePetUI() {
+        runOnUiThread {
+            if (activePet != null) {
+                ivPetActive.visibility = View.VISIBLE
+                val iconRes = when(activePet) {
+                    "buho" -> R.drawable.buho
+                    "gato" -> R.drawable.gatito
+                    "tortuga" -> R.drawable.tortuguita
+                    else -> 0
+                }
+                if (iconRes != 0) ivPetActive.setImageResource(iconRes)
+                ivPetActive.alpha = if (isPetFed) 1.0f else 0.4f
+
+                // Botón de habilidad búho
+                if (activePet == "buho" && isPetFed) {
+                    btnOwlAbility.visibility = View.VISIBLE
+                } else {
+                    btnOwlAbility.visibility = View.GONE
+                }
+            } else {
+                ivPetActive.visibility = View.GONE
+                btnOwlAbility.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun useOwlAbility() {
+        var removed = 0
+        val shuffledButtons = buttons.shuffled()
+        for (btn in shuffledButtons) {
+            if (btn.text != correctCountry && removed < 2) {
+                btn.visibility = View.INVISIBLE
+                removed++
+            }
+        }
+        isPetFed = false
+        userPreferences.setPetFed("buho", false)
+        updatePetUI()
+        Toast.makeText(this, "¡Búho ha eliminado dos opciones!", Toast.LENGTH_SHORT).show()
+    }
+
     private fun preloadImages(){
         val countryShiedsURL = mutableListOf<String>()
         databaseReference.child("escudos").get().addOnSuccessListener { dataSnapshot ->
@@ -127,23 +195,21 @@ class JuegoEscudoActivity: AppCompatActivity() {
     private fun updateInterface(userPreferences: UserPreferences) {
         for (button in buttons) {
             button.setOnClickListener { view ->
-                val button = view as Button
+                val btn = view as Button
                 setButtonsEnabled(false)
-                if (button.text == correctCountry) {
+                if (btn.text == correctCountry) {
                     playCorrectAnswerSound()
                     updateUI {
-                        button.setBackgroundColor(Color.GREEN)
+                        btn.setBackgroundColor(Color.GREEN)
                         progressBar.progress = ++correctGuesses
                         progressText.text = "$correctGuesses/10"
                         scoreReal += 10
                         updateScore(userPreferences, 10) {
                             if (correctGuesses == 10) {
-                                // Finalizar el juego y navegar a la actividad de victoria y guardar los puntos
                                 userPreferences.getScore { score ->
                                     saveUserAndFinish(score)
                                 }
                             } else {
-                                // Generar nuevos botones después de un retraso
                                 Handler(Looper.getMainLooper()).postDelayed({
                                     updateButtons()
                                     resetButtonColors(buttons)
@@ -154,24 +220,46 @@ class JuegoEscudoActivity: AppCompatActivity() {
                     }
                 } else {
                     playwrongAnswer()
+                    
+                    // Habilidad Tortuga (Escudo)
+                    var penalty = -5
+                    if (activePet == "tortuga" && isPetFed) {
+                        penalty = 0
+                        isPetFed = false
+                        userPreferences.setPetFed("tortuga", false)
+                        updatePetUI()
+                        Toast.makeText(this, "¡Escudo de Tortuga activado!", Toast.LENGTH_SHORT).show()
+                    }
+
                     lives--
-                    scoreReal -= 5
-                    updateScore(userPreferences, -5) {
+                    
+                    // Habilidad Gato (Vida Extra)
+                    if (lives == 0 && activePet == "gato" && isPetFed) {
+                        lives = 1
+                        isPetFed = false
+                        userPreferences.setPetFed("gato", false)
+                        updatePetUI()
+                        Toast.makeText(this, "¡Gato te dio una vida extra!", Toast.LENGTH_SHORT).show()
+                    }
+
+                    scoreReal += penalty
+                    updateScore(userPreferences, penalty) {
                         if (lives == 0) {
-                            // Finalizar el juego y navegar a la actividad de derrota y guardar los puntos
                             userPreferences.getScore { score ->
                                 saveUserAndFinish(score)
                             }
                         }
                     }
                     Handler(Looper.getMainLooper()).postDelayed({
-                        setButtonsEnabled(true)
+                        if (lives > 0) setButtonsEnabled(true)
                     }, 1200)
                     updateUI {
-                        button.setBackgroundColor(Color.RED)
+                        btn.setBackgroundColor(Color.RED)
                         val fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out)
-                        hearts[lives].startAnimation(fadeOut)
-                        hearts[lives].visibility = View.GONE
+                        if (lives >= 0 && hearts.size > lives) {
+                            hearts[lives].startAnimation(fadeOut)
+                            hearts[lives].visibility = View.GONE
+                        }
                         vibrateDevice()
                     }
                 }
@@ -179,23 +267,18 @@ class JuegoEscudoActivity: AppCompatActivity() {
         }
     }
 
-    // Actualiza el puntaje en la interfaz de usuario y en la base de datos
     private fun updateScore(userPreferences: UserPreferences, increment: Int, onComplete: () -> Unit) {
         userPreferences.getScore { score ->
             val newScore = score + increment
             userPreferences.setScore(newScore)
             scoreTextView.text = newScore.toString()
-            Log.d("Score", "Puntuación: $newScore")
             onComplete()
         }
     }
 
     private fun saveUserAndFinish(score: Int){
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
-        Log.d("ScoreR", "Puntuación real: $scoreReal")
-        Log.d("Score", "Puntuación: $score")
         userScoreManager.saveUserScore(userId, score, {
-            // Navegar a la actividad de victoria o derrota
             val intent = if (lives > 0) {
                 Intent(this, VictoriaIndividualActivity::class.java)
             } else {
@@ -206,7 +289,6 @@ class JuegoEscudoActivity: AppCompatActivity() {
             startActivity(intent)
             finish()
         }, {
-            // Manejar el error al guardar los puntos
             Log.e("FirestoreError", "Error al guardar los puntos", it)
         })
     }
@@ -227,7 +309,6 @@ class JuegoEscudoActivity: AppCompatActivity() {
         mediaPlayer.start()
     }
 
-    // Actualiza los botones con nuevos paises
     private fun updateButtons() {
         databaseReference.child("paises").get().addOnSuccessListener { dataSnapshot ->
             if (dataSnapshot.exists()) {
@@ -249,30 +330,25 @@ class JuegoEscudoActivity: AppCompatActivity() {
                     }
                 }
 
-                Log.d("FirebaseData", "Países seleccionados: $playCountryNames")
-
                 if (playCountryNames.size >= 4) {
                     correctCountry = playCountryNames.random()
                     val paisSnapshot = dataSnapshot.children.first { it.child("nombre").getValue(String::class.java) == correctCountry }
                     val escudoUrl = paisSnapshot.child("escudo").getValue(String::class.java)
 
-                    Log.d("FirebaseData", "País correcto: $correctCountry")
-                    Log.d("FirebaseData", "URL Bandera: $escudoUrl")
-
-                    // Actualizar la interfaz de usuario en el subproceso principal
                     updateUI {
                         val imageView = findViewById<ImageView>(R.id.bandera)
-                        Glide.with(this)
-                            .load(escudoUrl)
-                            .into(imageView)
+                        if (!isDestroyed) {
+                            Glide.with(this)
+                                .load(escudoUrl)
+                                .into(imageView)
+                        }
 
                         val shuffledCountryNames = playCountryNames.shuffled()
                         for (i in buttons.indices) {
                             buttons[i].text = shuffledCountryNames[i]
                             buttons[i].setBackgroundColor(Color.parseColor("#2E8DFF"))
+                            buttons[i].visibility = View.VISIBLE
                         }
-
-                        // Agregar el país seleccionado a la lista de países seleccionados
                         selectedCountries.add(correctCountry)
                     }
                 }
@@ -308,12 +384,10 @@ class JuegoEscudoActivity: AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Iniciar el servicio de música
         val musicIntent = Intent(this, MusicService::class.java)
         startService(musicIntent)
     }
 
-    // No detener el servicio de música en onPause
     override fun onPause() {
         super.onPause()
     }

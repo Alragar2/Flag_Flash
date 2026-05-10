@@ -19,11 +19,11 @@ import android.os.Vibrator
 import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -59,6 +59,7 @@ class JuegoPaisActivity: AppCompatActivity() {
     private var activePet: String? = null
     private var isPetFed = false
     private lateinit var ivPetActive: ImageView
+    private lateinit var btnOwlAbility: ImageButton
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,12 +73,17 @@ class JuegoPaisActivity: AppCompatActivity() {
         userPreferences = UserPreferences(this)
         
         ivPetActive = findViewById(R.id.ivPetActive)
+        btnOwlAbility = findViewById(R.id.btnOwlAbility)
 
         // Cargar Mascota
         userPreferences.getSelectedPet { pet ->
             activePet = pet
-            userPreferences.isPetFed { fed ->
-                isPetFed = fed
+            if (pet != null) {
+                userPreferences.isPetFed(pet) { fed ->
+                    isPetFed = fed
+                    updatePetUI()
+                }
+            } else {
                 updatePetUI()
             }
         }
@@ -143,7 +149,7 @@ class JuegoPaisActivity: AppCompatActivity() {
                     if (activePet == "tortuga" && isPetFed) {
                         penalty = 0
                         isPetFed = false
-                        userPreferences.setPetFed(false)
+                        userPreferences.setPetFed("tortuga", false)
                         updatePetUI()
                         Toast.makeText(this, "¡Escudo de Tortuga activado!", Toast.LENGTH_SHORT).show()
                     }
@@ -154,7 +160,7 @@ class JuegoPaisActivity: AppCompatActivity() {
                     if (lives == 0 && activePet == "gato" && isPetFed) {
                         lives = 1
                         isPetFed = false
-                        userPreferences.setPetFed(false)
+                        userPreferences.setPetFed("gato", false)
                         updatePetUI()
                         Toast.makeText(this, "¡Gato te dio una vida extra!", Toast.LENGTH_SHORT).show()
                     }
@@ -182,6 +188,13 @@ class JuegoPaisActivity: AppCompatActivity() {
                 }, 1000)
             }
         }
+
+        // Habilidad Búho (Pista)
+        btnOwlAbility.setOnClickListener {
+            if (activePet == "buho" && isPetFed) {
+                useOwlAbility()
+            }
+        }
     }
 
     private fun updatePetUI() {
@@ -196,10 +209,33 @@ class JuegoPaisActivity: AppCompatActivity() {
                 }
                 if (iconRes != 0) ivPetActive.setImageResource(iconRes)
                 ivPetActive.alpha = if (isPetFed) 1.0f else 0.4f
+
+                // Botón de habilidad búho
+                if (activePet == "buho" && isPetFed) {
+                    btnOwlAbility.visibility = View.VISIBLE
+                } else {
+                    btnOwlAbility.visibility = View.GONE
+                }
             } else {
                 ivPetActive.visibility = View.GONE
+                btnOwlAbility.visibility = View.GONE
             }
         }
+    }
+
+    private fun useOwlAbility() {
+        var removed = 0
+        val shuffledBanderas = banderas.toList().shuffled()
+        for (iv in shuffledBanderas) {
+            if (iv.tag != correctCountry && removed < 2) {
+                iv.visibility = View.INVISIBLE
+                removed++
+            }
+        }
+        isPetFed = false
+        userPreferences.setPetFed("buho", false)
+        updatePetUI()
+        Toast.makeText(this, "¡Búho ha eliminado dos opciones!", Toast.LENGTH_SHORT).show()
     }
 
     private fun updateScore(userPreferences: UserPreferences, increment: Int, onComplete: () -> Unit) {
@@ -291,6 +327,7 @@ class JuegoPaisActivity: AppCompatActivity() {
                                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                                 .into(banderas[i])
                             banderas[i].tag = shufledFlags[i]
+                            banderas[i].visibility = View.VISIBLE
                         }
                     }
                 }
