@@ -47,11 +47,8 @@
             android:screenOrientation="portrait"
             android:exported="false"/>
 
-        <activity android:name=".juego.JuegoBanderaActivity"
-            android:screenOrientation="portrait"
-            android:exported="false"/>
-
-        <activity android:name=".juego.JuegoPaisActivity"
+        <!-- Nueva Actividad Unificada Compose -->
+        <activity android:name=".juego.compose.GameActivity"
             android:screenOrientation="portrait"
             android:exported="false"/>
 
@@ -80,14 +77,6 @@
             android:exported="false"/>
 
         <activity android:name=".resultado.DerrotaIndividualActivity"
-            android:screenOrientation="portrait"
-            android:exported="false"/>
-
-        <activity android:name=".juego.JuegoCapitalActivity"
-            android:screenOrientation="portrait"
-            android:exported="false"/>
-
-        <activity android:name=".juego.JuegoEscudoActivity"
             android:screenOrientation="portrait"
             android:exported="false"/>
 

@@ -14,8 +14,8 @@ android {
         applicationId = "alragar2.isi3.uv.flagflash"
         minSdk = 24
         targetSdk = 35
-        versionCode = 9
-        versionName = "1.0.5"
+        versionCode = 10
+        versionName = "1.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -96,6 +96,9 @@ dependencies {
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
     kapt("androidx.room:room-compiler:2.6.1")
+
+    // Coil (Image Loading for Compose)
+    implementation("io.coil-kt:coil-compose:2.6.0")
 
     // Otras dependencias útiles
     implementation("androidx.core:core-ktx:1.12.0")

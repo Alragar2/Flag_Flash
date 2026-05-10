@@ -135,6 +135,30 @@ class UserPreferences(context: Context) {
         }
     }
 
+    fun getDiscoveredCountries(onComplete: (List<String>) -> Unit) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            firestore.collection("users").document(userId).get().addOnSuccessListener { documentSnapshot ->
+                val countries = documentSnapshot.get("discoveredCountries") as? List<String> ?: emptyList()
+                onComplete(countries)
+            }.addOnFailureListener { onComplete(emptyList()) }
+        } else { onComplete(emptyList()) }
+    }
+
+    fun addDiscoveredCountry(countryName: String) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            getDiscoveredCountries { currentCountries ->
+                if (!currentCountries.contains(countryName)) {
+                    val newCountries = currentCountries.toMutableList()
+                    newCountries.add(countryName)
+                    val data = hashMapOf("discoveredCountries" to newCountries)
+                    firestore.collection("users").document(userId).set(data, SetOptions.merge())
+                }
+            }
+        }
+    }
+
     fun getInitialScore(): Int {
         return sharedPreferences.getInt("initial_score", 0)
     }

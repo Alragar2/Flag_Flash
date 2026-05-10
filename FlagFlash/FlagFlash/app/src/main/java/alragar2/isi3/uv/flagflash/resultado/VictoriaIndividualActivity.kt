@@ -4,10 +4,8 @@ import alragar2.isi3.uv.flagflash.MainActivity
 import alragar2.isi3.uv.flagflash.musica.MusicService
 import alragar2.isi3.uv.flagflash.R
 import alragar2.isi3.uv.flagflash.UserPreferences
-import alragar2.isi3.uv.flagflash.juego.JuegoBanderaActivity
-import alragar2.isi3.uv.flagflash.juego.JuegoCapitalActivity
-import alragar2.isi3.uv.flagflash.juego.JuegoEscudoActivity
-import alragar2.isi3.uv.flagflash.juego.JuegoPaisActivity
+import alragar2.isi3.uv.flagflash.juego.compose.GameActivity
+import alragar2.isi3.uv.flagflash.juego.compose.GameMode
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -79,16 +77,26 @@ class VictoriaIndividualActivity : AppCompatActivity() {
         }
 
         playAgainButton.setOnClickListener {
-            val intent = when (originActivity) {
-                "JuegoBanderaActivity" -> Intent(this, JuegoBanderaActivity::class.java)
-                "JuegoPaisActivity" -> Intent(this, JuegoPaisActivity::class.java)
-                "JuegoCapitalActivity" -> Intent(this, JuegoCapitalActivity::class.java)
-                "JuegoEscudoActivity" -> Intent(this, JuegoEscudoActivity::class.java)
-                else -> Intent (this, MainActivity::class.java)
+            val mode = when (originActivity) {
+                "JuegoBanderaActivity" -> GameMode.BANDERA
+                "JuegoPaisActivity" -> GameMode.PAIS
+                "JuegoCapitalActivity" -> GameMode.CAPITAL
+                "JuegoEscudoActivity" -> GameMode.ESCUDO
+                else -> null
             }
-            intent.putExtra("selectedContinent", selectedContinent)
-            startActivity(intent)
-            finish()
+
+            if (mode != null) {
+                val intent = Intent(this, GameActivity::class.java)
+                intent.putExtra("gameMode", mode.name)
+                intent.putExtra("selectedContinent", selectedContinent)
+                startActivity(intent)
+                finish()
+            } else {
+                val intent = Intent(this, MainActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+                finish()
+            }
         }
     }
 

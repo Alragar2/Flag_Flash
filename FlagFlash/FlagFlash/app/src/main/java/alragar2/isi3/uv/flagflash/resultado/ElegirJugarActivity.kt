@@ -3,10 +3,8 @@ package alragar2.isi3.uv.flagflash.resultado
 import alragar2.isi3.uv.flagflash.musica.MusicService
 import alragar2.isi3.uv.flagflash.R
 import alragar2.isi3.uv.flagflash.galeria.GameModeAdapter
-import alragar2.isi3.uv.flagflash.juego.JuegoBanderaActivity
-import alragar2.isi3.uv.flagflash.juego.JuegoCapitalActivity
-import alragar2.isi3.uv.flagflash.juego.JuegoEscudoActivity
-import alragar2.isi3.uv.flagflash.juego.JuegoPaisActivity
+import alragar2.isi3.uv.flagflash.juego.compose.GameActivity
+import alragar2.isi3.uv.flagflash.juego.compose.GameMode
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -25,18 +23,18 @@ class ElegirJugarActivity : AppCompatActivity() {
         val gameModesRecyclerView = findViewById<RecyclerView>(R.id.gameModesRecyclerView)
         gameModesRecyclerView.layoutManager = LinearLayoutManager(this)
         gameModesRecyclerView.adapter = GameModeAdapter(gameModes) { gameMode ->
-            val activityMap = mapOf(
-                "Bandera" to JuegoBanderaActivity::class.java,
-                "País" to JuegoPaisActivity::class.java,
-                "Escudos/Emblemas nacionales" to JuegoEscudoActivity::class.java,
-                "Capitales" to JuegoCapitalActivity::class.java
-            )
-
-            activityMap[gameMode]?.let { activityClass ->
-                val intent = Intent(this, activityClass)
-                intent.putExtra("selectedContinent", selectedcontinent)
-                startActivity(intent)
+            val modeEnum = when (gameMode) {
+                "Bandera" -> GameMode.BANDERA
+                "País" -> GameMode.PAIS
+                "Escudos/Emblemas nacionales" -> GameMode.ESCUDO
+                "Capitales" -> GameMode.CAPITAL
+                else -> GameMode.BANDERA
             }
+
+            val intent = Intent(this, GameActivity::class.java)
+            intent.putExtra("gameMode", modeEnum.name)
+            intent.putExtra("selectedContinent", selectedcontinent)
+            startActivity(intent)
         }
 
         val continentFilter = listOf("Todos", "África", "América", "Asia", "Europa", "Oceanía")
@@ -47,17 +45,13 @@ class ElegirJugarActivity : AppCompatActivity() {
         }
     }
 
-    // Iniciar el servicio de música en onResume
     override fun onResume() {
         super.onResume()
-        // Iniciar el servicio de música
         val musicIntent = Intent(this, MusicService::class.java)
         startService(musicIntent)
     }
 
-    // No detener el servicio de música en onPause
     override fun onPause() {
         super.onPause()
     }
-
 }
