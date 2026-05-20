@@ -4,6 +4,10 @@ enum class GameMode {
     BANDERA, PAIS, CAPITAL, ESCUDO
 }
 
+enum class GameType {
+    NORMAL, TIME_ATTACK, SURVIVAL
+}
+
 data class Option(
     val text: String? = null,
     val imageUrl: String? = null
@@ -30,5 +34,7 @@ data class GameState(
     val mistakes: Int = 0,
     val isLoading: Boolean = true,
     val selectedOption: Option? = null,
-    val showResultTick: Boolean? = null // true = correct, false = wrong, null = none
+    val showResultTick: Boolean? = null, // true = correct, false = wrong, null = none
+    val timeLeft: Int? = null, // For TIME_ATTACK
+    val gameType: GameType = GameType.NORMAL
 )

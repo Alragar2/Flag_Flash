@@ -29,15 +29,45 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     private val selectedCountries = mutableListOf<String>()
     private var startTime: Long = 0
 
-    fun initGame(mode: GameMode, continent: String) {
+    fun initGame(mode: GameMode, continent: String, type: GameType = GameType.NORMAL, questions: String = "15") {
         gameMode = mode
         selectedContinent = continent
         startTime = System.currentTimeMillis()
+        
+        val totalQ = if (questions == "infinity" || type == GameType.SURVIVAL) Int.MAX_VALUE else questions.toIntOrNull() ?: 15
+
+        _uiState.value = _uiState.value.copy(
+            gameType = type,
+            totalQuestions = totalQ,
+            timeLeft = if (type == GameType.TIME_ATTACK) 60 else null,
+            lives = if (type == GameType.SURVIVAL) 1 else 3
+        )
         
         viewModelScope.launch {
             loadUserStats()
             loadCountries()
             generateQuestion()
+        }
+
+        if (type == GameType.TIME_ATTACK) {
+            startTimer()
+        }
+    }
+
+    private fun startTimer() {
+        viewModelScope.launch {
+            while (_uiState.value.timeLeft != null && _uiState.value.timeLeft!! > 0 && !_uiState.value.isGameOver) {
+                kotlinx.coroutines.delay(1000)
+                if (!_uiState.value.isGameOver && _uiState.value.showResultTick == null) {
+                    val currentTimer = _uiState.value.timeLeft ?: 0
+                    if (currentTimer <= 1) {
+                        _uiState.value = _uiState.value.copy(timeLeft = 0)
+                        finishGame(false)
+                    } else {
+                        _uiState.value = _uiState.value.copy(timeLeft = currentTimer - 1)
+                    }
+                }
+            }
         }
     }
 
@@ -90,9 +120,16 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         }
 
         if (pool.size < 4) {
-            // Not enough countries left, reuse or finish
-            finishGame(true)
-            return
+            if (_uiState.value.totalQuestions == Int.MAX_VALUE) {
+                // If it's infinite mode, reset the selected countries and regenerate
+                selectedCountries.clear()
+                generateQuestion()
+                return
+            } else {
+                // Not enough countries left, reuse or finish
+                finishGame(true)
+                return
+            }
         }
 
         val questionCountries = pool.shuffled().take(4)
@@ -163,15 +200,6 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         // Record discovered country
         val currentQuestion = _uiState.value.currentQuestion
         if (currentQuestion != null) {
-            val countryName = when(gameMode) {
-                GameMode.BANDERA, GameMode.ESCUDO, GameMode.CAPITAL -> currentQuestion.correctOption.text
-                GameMode.PAIS -> currentQuestion.promptText
-                else -> null
-            }
-            // For GameMode.PAIS, the prompt text is the country name.
-            // For others, the correct option text is usually the country name (except for CAPITAL where it's the capital, but wait).
-            // Actually, let's find the country in allCountries to be safe.
-            
             val discoveredCountry = allCountries.find { 
                 when(gameMode) {
                     GameMode.BANDERA, GameMode.ESCUDO -> it["nombre"] == currentQuestion.correctOption.text
@@ -180,15 +208,21 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                     else -> false
                 }
             }
-            
             discoveredCountry?.get("nombre")?.let { name ->
                 userPreferences.addDiscoveredCountry(name as String)
             }
         }
 
+        val newTimeLeft = if (_uiState.value.gameType == GameType.TIME_ATTACK) {
+            (_uiState.value.timeLeft ?: 0) + 2
+        } else {
+            _uiState.value.timeLeft
+        }
+
         _uiState.value = _uiState.value.copy(
             score = newScore,
-            currentQuestionIndex = nextIndex
+            currentQuestionIndex = nextIndex,
+            timeLeft = newTimeLeft
         )
 
         viewModelScope.launch {
@@ -211,24 +245,34 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             _uiState.value = _uiState.value.copy(isPetFed = false)
         }
 
-        currentLives--
+        if (_uiState.value.gameType != GameType.TIME_ATTACK) {
+            currentLives--
+        }
 
         // Gato Ability
-        if (currentLives <= 0 && activePet == "gato" && isPetFed) {
+        if (currentLives <= 0 && activePet == "gato" && isPetFed && _uiState.value.gameType != GameType.TIME_ATTACK) {
             currentLives = 1
             isPetFed = false
             userPreferences.setPetFed("gato", false)
             _uiState.value = _uiState.value.copy(isPetFed = false)
         }
 
+        val newTimeLeft = if (_uiState.value.gameType == GameType.TIME_ATTACK) {
+            val t = (_uiState.value.timeLeft ?: 0) - 3
+            if (t < 0) 0 else t
+        } else {
+            _uiState.value.timeLeft
+        }
+
         updateScore(penalty)
         _uiState.value = _uiState.value.copy(
             score = _uiState.value.score + penalty,
             lives = currentLives,
-            mistakes = _uiState.value.mistakes + 1
+            mistakes = _uiState.value.mistakes + 1,
+            timeLeft = newTimeLeft
         )
 
-        if (currentLives <= 0) {
+        if (currentLives <= 0 || newTimeLeft == 0) {
             finishGame(false)
         } else {
             viewModelScope.launch {
@@ -270,5 +314,33 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         userScoreManager.saveUserScore(userId, _uiState.value.score, {}, {})
+
+        // Estadísticas y Logros
+        userPreferences.incrementTotalGames()
+        if (victory && _uiState.value.mistakes == 0) {
+            userPreferences.incrementPerfectGames()
+        }
+
+        userPreferences.getStats { total, perfect ->
+            if (victory) userPreferences.unlockAchievement("first_win") {}
+            if (total >= 10) userPreferences.unlockAchievement("veteran_10") {}
+            if (total >= 50) userPreferences.unlockAchievement("veteran_50") {}
+            if (perfect >= 1) userPreferences.unlockAchievement("perfect_1") {}
+            if (perfect >= 5) userPreferences.unlockAchievement("perfect_5") {}
+        }
+
+        val correctAnswers = _uiState.value.currentQuestionIndex
+        userPreferences.addCorrectAnswers(correctAnswers)
+        if (_uiState.value.gameType == GameType.SURVIVAL) {
+            userPreferences.updateSurvivalMaxScore(correctAnswers)
+        } else if (_uiState.value.gameType == GameType.TIME_ATTACK) {
+            userPreferences.updateTimeAttackMaxScore(correctAnswers)
+        }
+
+        userPreferences.getAdvancedStats { correct, sMax, tMax ->
+            if (correct >= 100) userPreferences.unlockAchievement("erudito_100") {}
+            if (sMax >= 20) userPreferences.unlockAchievement("survival_20") {}
+            if (tMax >= 15) userPreferences.unlockAchievement("time_attack_15") {}
+        }
     }
 }

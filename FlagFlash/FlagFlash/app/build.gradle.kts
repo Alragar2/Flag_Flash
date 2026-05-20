@@ -100,6 +100,15 @@ dependencies {
     // Coil (Image Loading for Compose)
     implementation("io.coil-kt:coil-compose:2.6.0")
 
+    // Navigation Compose
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+
+    // Konfetti (confetti animation)
+    implementation("nl.dionsegijn:konfetti-compose:2.0.4")
+
+    // Coroutines Play Services (await() on Firebase Tasks)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
+
     // Otras dependencias útiles
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")

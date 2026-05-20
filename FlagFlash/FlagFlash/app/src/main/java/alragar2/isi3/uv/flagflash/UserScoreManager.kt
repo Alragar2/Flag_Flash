@@ -51,7 +51,9 @@ class UserScoreManager {
             result.documents.map { document ->
                 Player(
                     name = document.getString("name") ?: "Unknown",
-                    score = document.getLong("score")?.toInt() ?: 0
+                    score = document.getLong("score")?.toInt() ?: 0,
+                    avatar = document.getString("avatar") ?: "default",
+                    frame = document.getString("frame") ?: "none"
                 )
             }
         } catch (e: Exception) {

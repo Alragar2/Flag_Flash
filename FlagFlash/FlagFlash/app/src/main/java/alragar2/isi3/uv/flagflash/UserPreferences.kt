@@ -183,4 +183,165 @@ class UserPreferences(context: Context) {
             firestore.collection("users").document(userId).set(userName, SetOptions.merge())
         }
     }
+
+    fun getAvatar(onComplete: (String) -> Unit) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            firestore.collection("users").document(userId).get().addOnSuccessListener { documentSnapshot ->
+                onComplete(documentSnapshot.getString("avatar") ?: "default")
+            }.addOnFailureListener { onComplete("default") }
+        } else { onComplete("default") }
+    }
+
+    fun setAvatar(avatar: String) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            val data = hashMapOf("avatar" to avatar)
+            firestore.collection("users").document(userId).set(data, SetOptions.merge())
+        }
+    }
+
+    fun getFrame(onComplete: (String) -> Unit) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            firestore.collection("users").document(userId).get().addOnSuccessListener { documentSnapshot ->
+                onComplete(documentSnapshot.getString("frame") ?: "none")
+            }.addOnFailureListener { onComplete("none") }
+        } else { onComplete("none") }
+    }
+
+    fun setFrame(frame: String) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            val data = hashMapOf("frame" to frame)
+            firestore.collection("users").document(userId).set(data, SetOptions.merge())
+        }
+    }
+    
+    fun getOwnedCosmetics(onComplete: (List<String>) -> Unit) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            firestore.collection("users").document(userId).get().addOnSuccessListener { documentSnapshot ->
+                val cosmetics = documentSnapshot.get("ownedCosmetics") as? List<String> ?: emptyList()
+                onComplete(cosmetics)
+            }.addOnFailureListener { onComplete(emptyList()) }
+        } else { onComplete(emptyList()) }
+    }
+
+    fun addOwnedCosmetic(cosmeticId: String) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            getOwnedCosmetics { current ->
+                if (!current.contains(cosmeticId)) {
+                    val newCosmetics = current.toMutableList()
+                    newCosmetics.add(cosmeticId)
+                    val data = hashMapOf("ownedCosmetics" to newCosmetics)
+                    firestore.collection("users").document(userId).set(data, SetOptions.merge())
+                }
+            }
+        }
+    }
+
+    fun incrementTotalGames() {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            firestore.collection("users").document(userId).get().addOnSuccessListener { documentSnapshot ->
+                val totalGames = documentSnapshot.getLong("total_games") ?: 0L
+                firestore.collection("users").document(userId).set(hashMapOf("total_games" to totalGames + 1), SetOptions.merge())
+            }
+        }
+    }
+
+    fun incrementPerfectGames() {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            firestore.collection("users").document(userId).get().addOnSuccessListener { documentSnapshot ->
+                val perfectGames = documentSnapshot.getLong("perfect_games") ?: 0L
+                firestore.collection("users").document(userId).set(hashMapOf("perfect_games" to perfectGames + 1), SetOptions.merge())
+            }
+        }
+    }
+
+    fun getStats(onComplete: (totalGames: Long, perfectGames: Long) -> Unit) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            firestore.collection("users").document(userId).get().addOnSuccessListener { documentSnapshot ->
+                val totalGames = documentSnapshot.getLong("total_games") ?: 0L
+                val perfectGames = documentSnapshot.getLong("perfect_games") ?: 0L
+                onComplete(totalGames, perfectGames)
+            }.addOnFailureListener { onComplete(0L, 0L) }
+        } else { onComplete(0L, 0L) }
+    }
+
+    fun getUnlockedAchievements(onComplete: (List<String>) -> Unit) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            firestore.collection("users").document(userId).get().addOnSuccessListener { documentSnapshot ->
+                val achievements = documentSnapshot.get("unlocked_achievements") as? List<String> ?: emptyList()
+                onComplete(achievements)
+            }.addOnFailureListener { onComplete(emptyList()) }
+        } else { onComplete(emptyList()) }
+    }
+
+    fun unlockAchievement(achievementId: String, onUnlocked: () -> Unit) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            getUnlockedAchievements { current ->
+                if (!current.contains(achievementId)) {
+                    val newAchievements = current.toMutableList()
+                    newAchievements.add(achievementId)
+                    val data = hashMapOf("unlocked_achievements" to newAchievements)
+                    firestore.collection("users").document(userId).set(data, SetOptions.merge()).addOnSuccessListener {
+                        onUnlocked()
+                    }
+                }
+            }
+        }
+    }
+
+    fun addCorrectAnswers(count: Int) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            firestore.collection("users").document(userId).get().addOnSuccessListener { documentSnapshot ->
+                val total = documentSnapshot.getLong("total_correct_answers") ?: 0L
+                firestore.collection("users").document(userId).set(hashMapOf("total_correct_answers" to total + count), SetOptions.merge())
+            }
+        }
+    }
+
+    fun updateSurvivalMaxScore(score: Int) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            firestore.collection("users").document(userId).get().addOnSuccessListener { documentSnapshot ->
+                val currentMax = documentSnapshot.getLong("survival_max_score") ?: 0L
+                if (score > currentMax) {
+                    firestore.collection("users").document(userId).set(hashMapOf("survival_max_score" to score), SetOptions.merge())
+                }
+            }
+        }
+    }
+
+    fun updateTimeAttackMaxScore(score: Int) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            firestore.collection("users").document(userId).get().addOnSuccessListener { documentSnapshot ->
+                val currentMax = documentSnapshot.getLong("time_attack_max_score") ?: 0L
+                if (score > currentMax) {
+                    firestore.collection("users").document(userId).set(hashMapOf("time_attack_max_score" to score), SetOptions.merge())
+                }
+            }
+        }
+    }
+
+    fun getAdvancedStats(onComplete: (correctAnswers: Long, survivalMax: Long, timeAttackMax: Long) -> Unit) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            firestore.collection("users").document(userId).get().addOnSuccessListener { documentSnapshot ->
+                val cAnswers = documentSnapshot.getLong("total_correct_answers") ?: 0L
+                val sMax = documentSnapshot.getLong("survival_max_score") ?: 0L
+                val tMax = documentSnapshot.getLong("time_attack_max_score") ?: 0L
+                onComplete(cAnswers, sMax, tMax)
+            }.addOnFailureListener { onComplete(0L, 0L, 0L) }
+        } else { onComplete(0L, 0L, 0L) }
+    }
 }

@@ -38,75 +38,14 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-6281701644214410~5770125711"/>
 
-        <activity
-            android:name=".resultado.ElegirJugarActivity"
-            android:screenOrientation="portrait"
-            android:exported="false"/>
-        <activity
-            android:name=".resultado.ElegirMultijugarActivity"
-            android:screenOrientation="portrait"
-            android:exported="false"/>
-
-        <!-- Nueva Actividad Unificada Compose -->
-        <activity android:name=".juego.compose.GameActivity"
-            android:screenOrientation="portrait"
-            android:exported="false"/>
-
-        <activity android:name=".juego.MultijugadorBanderaActivity"
-            android:screenOrientation="portrait"
-            android:exported="false"/>
-
-        <activity android:name=".juego.MultijugadorPaisActivity"
-            android:screenOrientation="portrait"
-            android:exported="false"/>
-
-        <activity android:name=".resultado.VictoriaMJActivity"
-            android:screenOrientation="portrait"
-            android:exported="false"/>
-
-        <activity android:name=".resultado.VictoriaMJActivity2"
-            android:screenOrientation="portrait"
-            android:exported="false"/>
-
-        <activity android:name=".galeria.GaleriaActivity"
-            android:screenOrientation="portrait"
-            android:exported="false"/>
-
-        <activity android:name=".resultado.VictoriaIndividualActivity"
-            android:screenOrientation="portrait"
-            android:exported="false"/>
-
-        <activity android:name=".resultado.DerrotaIndividualActivity"
-            android:screenOrientation="portrait"
-            android:exported="false"/>
-
-        <activity android:name=".juego.MultijugadorCapitalActivity"
-            android:screenOrientation="portrait"
-            android:exported="false"/>
-
-        <activity android:name=".ranking.RankingActivity"
-            android:screenOrientation="portrait"
-            android:exported="false"/>
-
-        <activity android:name=".TiendaActivity"
-            android:screenOrientation="portrait"
-            android:exported="false"/>
-
-        <activity android:name=".authentication.AuthenticationRegisterActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
-
-        <activity android:name=".authentication.AuthenticationLoginActivity"
-            android:screenOrientation="portrait"
-            android:exported="false" />
-
+        <!-- Single entry-point Activity with global NavHost -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -114,7 +53,7 @@
         <service
             android:name=".musica.MusicService"
             android:enabled="true"
-            android:exported="true"
+            android:exported="false"
             android:stopWithTask="false">
         </service>
 

@@ -21,9 +21,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.graphics.Brush
 import coil.compose.AsyncImage
+import alragar2.isi3.uv.flagflash.ui.theme.*
 import coil.request.ImageRequest
 
 @Composable
@@ -42,11 +45,13 @@ fun GameScreen(
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize().background(Color(0xFFBFF3FF))) {
+    val bgGradient = Brush.verticalGradient(listOf(SkyBlue, BgLight))
+    
+    Box(modifier = Modifier.fillMaxSize().background(bgGradient)) {
         if (state.isLoading) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         } else {
-            Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+            Column(modifier = Modifier.fillMaxSize().statusBarsPadding().padding(16.dp)) {
                 // Header: Score and Lives
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -85,18 +90,30 @@ fun GameScreen(
                         }
                     }
 
-                    // Lives
-                    Row {
-                        repeat(3) { index ->
-                            val isAlive = index < state.lives
-                            Image(
-                                painter = painterResource(id = R.drawable.corazon),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .size(32.dp)
-                                    .padding(horizontal = 2.dp)
-                                    .alpha(if (isAlive) 1f else 0.2f)
+                    // Lives or Timer
+                    if (state.gameType == GameType.TIME_ATTACK) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = "⏱️ ${state.timeLeft ?: 0}s",
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = if ((state.timeLeft ?: 0) <= 10) RedWrong else TextPrimary
                             )
+                        }
+                    } else {
+                        Row {
+                            val maxLives = if (state.gameType == GameType.SURVIVAL) 1 else 3
+                            repeat(maxLives) { index ->
+                                val isAlive = index < state.lives
+                                Image(
+                                    painter = painterResource(id = R.drawable.corazon),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .size(32.dp)
+                                        .padding(horizontal = 2.dp)
+                                        .alpha(if (isAlive) 1f else 0.2f)
+                                )
+                            }
                         }
                     }
                 }
@@ -108,11 +125,11 @@ fun GameScreen(
                     LinearProgressIndicator(
                         progress = state.currentQuestionIndex.toFloat() / state.totalQuestions,
                         modifier = Modifier.weight(1f).height(12.dp).clip(RoundedCornerShape(6.dp)),
-                        color = Color(0xFF6200EE),
-                        trackColor = Color(0xFFD1C4E9)
+                        color = DeepSkyBlue,
+                        trackColor = SkyBlue.copy(alpha = 0.3f)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = "${state.currentQuestionIndex}/${state.totalQuestions}")
+                    Text(text = "${state.currentQuestionIndex}/${state.totalQuestions}", style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -128,7 +145,8 @@ fun GameScreen(
 
                     Text(
                         text = title,
-                        fontSize = 24.sp,
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = TextSecondary,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
@@ -138,9 +156,10 @@ fun GameScreen(
                     if (mode == GameMode.PAIS || mode == GameMode.CAPITAL) {
                         Text(
                             text = question.promptText ?: "",
-                            fontSize = 28.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Black,
+                            style = MaterialTheme.typography.displayMedium,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = TextPrimary,
+                            textAlign = TextAlign.Center,
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                         )
                     }
@@ -213,17 +232,22 @@ fun GameScreen(
                                         .padding(vertical = 4.dp, horizontal = 32.dp),
                                     colors = ButtonDefaults.buttonColors(
                                         containerColor = when {
-                                            state.selectedOption == option && state.showResultTick == true -> Color.Green
-                                            state.selectedOption == option && state.showResultTick == false -> Color.Red
-                                            else -> Color(0xFF2E8DFF)
+                                            state.selectedOption == option && state.showResultTick == true -> GreenCorrect
+                                            state.selectedOption == option && state.showResultTick == false -> RedWrong
+                                            else -> DeepSkyBlue
                                         }
                                     )
                                 ) {
-                                    Text(text = option.text ?: "", fontSize = 18.sp)
+                                    Text(text = option.text ?: "", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = Color.White)
                                 }
                             }
                         }
                     }
+                }
+
+                // Espacio extra al final de la columna cuando el búho está activo para evitar solapamiento con el botón flotante
+                if (state.activePet == "buho" && state.isPetFed) {
+                    Spacer(modifier = Modifier.height(80.dp))
                 }
             }
 
