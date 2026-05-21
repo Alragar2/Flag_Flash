@@ -217,7 +217,7 @@ fun SelectableCard(text: String, isSelected: Boolean, isUnlocked: Boolean, unloc
             .heightIn(min = 50.dp)
             .shadow(if (isSelected) 8.dp else 2.dp, RoundedCornerShape(12.dp))
             .clip(RoundedCornerShape(12.dp))
-            .background(if (!isUnlocked) Color.LightGray else if (isSelected) DeepSkyBlue else SurfaceOverlay)
+            .background(if (!isUnlocked) Color.LightGray else if (isSelected) DeepSkyBlue else Color.White)
             .clickable(enabled = isUnlocked, onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 8.dp),
         contentAlignment = Alignment.Center
@@ -324,7 +324,7 @@ private fun GameModeCard(emoji: String, label: String, onClick: () -> Unit) {
             .fillMaxWidth()
             .shadow(4.dp, RoundedCornerShape(16.dp))
             .clip(RoundedCornerShape(16.dp))
-            .background(SurfaceOverlay)
+            .background(Color.White)
             .clickable(onClick = onClick)
             .padding(horizontal = 20.dp, vertical = 18.dp),
         verticalAlignment = Alignment.CenterVertically

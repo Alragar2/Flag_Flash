@@ -242,70 +242,112 @@ fun FlagFlashNavGraph(startDestination: String) {
         }
 
         // ── Online multiplayer ────────────────────────────────────────────
-        composable(NavRoutes.ONLINE_MENU) {
-            OnlineMenuScreen(
-                onCreateRoom = { navController.navigate(NavRoutes.CREATE_ROOM) },
-                onJoinRoom = { navController.navigate(NavRoutes.JOIN_ROOM) },
-                onBack = { navController.popBackStack() }
-            )
-        }
+        navigation(startDestination = NavRoutes.ONLINE_MENU, route = "online_route") {
+            composable(NavRoutes.ONLINE_MENU) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("online_route")
+                }
+                val vm: OnlineGameViewModel = viewModel(viewModelStoreOwner = parentEntry)
+                LaunchedEffect(Unit) {
+                    vm.resetState()
+                }
+                OnlineMenuScreen(
+                    onCreateRoom = { navController.navigate(NavRoutes.CREATE_ROOM) },
+                    onJoinRoom = { navController.navigate(NavRoutes.JOIN_ROOM) },
+                    onBack = { navController.popBackStack() }
+                )
+            }
 
-        composable(NavRoutes.CREATE_ROOM) {
-            val vm: OnlineGameViewModel = viewModel()
-            CreateRoomScreen(
-                viewModel = vm,
-                onRoomCreated = { code -> navController.navigate(NavRoutes.waitingRoom(code)) },
-                onBack = { navController.popBackStack() }
-            )
-        }
+            composable(NavRoutes.CREATE_ROOM) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("online_route")
+                }
+                val vm: OnlineGameViewModel = viewModel(viewModelStoreOwner = parentEntry)
+                CreateRoomScreen(
+                    viewModel = vm,
+                    onRoomCreated = { code -> navController.navigate(NavRoutes.waitingRoom(code)) },
+                    onBack = { navController.popBackStack() }
+                )
+            }
 
-        composable(NavRoutes.JOIN_ROOM) {
-            val vm: OnlineGameViewModel = viewModel()
-            JoinRoomScreen(
-                viewModel = vm,
-                onJoined = { code -> navController.navigate(NavRoutes.waitingRoom(code)) },
-                onBack = { navController.popBackStack() }
-            )
-        }
+            composable(NavRoutes.JOIN_ROOM) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("online_route")
+                }
+                val vm: OnlineGameViewModel = viewModel(viewModelStoreOwner = parentEntry)
+                JoinRoomScreen(
+                    viewModel = vm,
+                    onJoined = { code -> navController.navigate(NavRoutes.waitingRoom(code)) },
+                    onBack = { navController.popBackStack() }
+                )
+            }
 
-        composable(
-            route = NavRoutes.WAITING_ROOM,
-            arguments = listOf(navArgument("roomCode") { type = NavType.StringType })
-        ) { back ->
-            val code = back.arguments?.getString("roomCode") ?: ""
-            val vm: OnlineGameViewModel = viewModel()
-            WaitingRoomScreen(
-                viewModel = vm,
-                onGameStarted = { navController.navigate(NavRoutes.onlineGame(code)) },
-                onBack = { navController.popBackStack() }
-            )
-        }
-
-        composable(
-            route = NavRoutes.ONLINE_GAME,
-            arguments = listOf(navArgument("roomCode") { type = NavType.StringType })
-        ) { back ->
-            val code = back.arguments?.getString("roomCode") ?: ""
-            val vm: OnlineGameViewModel = viewModel()
-            OnlineGameScreen(
-                viewModel = vm,
-                onGameOver = {
-                    navController.navigate(NavRoutes.onlineResult(code)) {
-                        popUpTo(NavRoutes.WAITING_ROOM) { inclusive = true }
+            composable(
+                route = NavRoutes.WAITING_ROOM,
+                arguments = listOf(navArgument("roomCode") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("online_route")
+                }
+                val vm: OnlineGameViewModel = viewModel(viewModelStoreOwner = parentEntry)
+                val code = backStackEntry.arguments?.getString("roomCode") ?: ""
+                LaunchedEffect(code) {
+                    if (vm.state.value.roomCode != code) {
+                        vm.setRoomCodeAndObserve(code)
                     }
                 }
-            )
-        }
+                WaitingRoomScreen(
+                    viewModel = vm,
+                    onGameStarted = { navController.navigate(NavRoutes.onlineGame(code)) },
+                    onBack = { navController.popBackStack() }
+                )
+            }
 
-        composable(
-            route = NavRoutes.ONLINE_RESULT,
-            arguments = listOf(navArgument("roomCode") { type = NavType.StringType })
-        ) {
-            val vm: OnlineGameViewModel = viewModel()
-            OnlineResultScreen(
-                viewModel = vm,
-                onMainMenu = { navController.navigate(NavRoutes.MAIN) { popUpTo(NavRoutes.MAIN) { inclusive = true } } }
-            )
+            composable(
+                route = NavRoutes.ONLINE_GAME,
+                arguments = listOf(navArgument("roomCode") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("online_route")
+                }
+                val vm: OnlineGameViewModel = viewModel(viewModelStoreOwner = parentEntry)
+                val code = backStackEntry.arguments?.getString("roomCode") ?: ""
+                LaunchedEffect(code) {
+                    if (vm.state.value.roomCode != code) {
+                        vm.setRoomCodeAndObserve(code)
+                    }
+                }
+                OnlineGameScreen(
+                    viewModel = vm,
+                    onGameOver = {
+                        navController.navigate(NavRoutes.onlineResult(code)) {
+                            popUpTo(NavRoutes.WAITING_ROOM) { inclusive = true }
+                        }
+                    }
+                )
+            }
+
+            composable(
+                route = NavRoutes.ONLINE_RESULT,
+                arguments = listOf(navArgument("roomCode") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("online_route")
+                }
+                val vm: OnlineGameViewModel = viewModel(viewModelStoreOwner = parentEntry)
+                val code = backStackEntry.arguments?.getString("roomCode") ?: ""
+                LaunchedEffect(code) {
+                    if (vm.state.value.roomCode != code) {
+                        vm.setRoomCodeAndObserve(code)
+                    }
+                }
+                OnlineResultScreen(
+                    viewModel = vm,
+                    onMainMenu = {
+                        navController.popBackStack("online_route", inclusive = true)
+                    }
+                )
+            }
         }
     }
 }

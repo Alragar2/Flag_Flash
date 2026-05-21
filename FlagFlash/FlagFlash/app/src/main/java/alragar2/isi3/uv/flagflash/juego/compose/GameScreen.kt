@@ -199,6 +199,7 @@ fun GameScreen(
                     // Options Area
                     if (mode == GameMode.PAIS) {
                         // Grid of Flags
+                        val cardShape = RoundedCornerShape(12.dp)
                         LazyVerticalGrid(
                             columns = GridCells.Fixed(2),
                             contentPadding = PaddingValues(8.dp),
@@ -209,13 +210,17 @@ fun GameScreen(
                                     modifier = Modifier
                                         .padding(8.dp)
                                         .aspectRatio(1.5f)
+                                        .clip(cardShape)
                                         .clickable { viewModel.onOptionSelected(option) },
+                                    shape = cardShape,
                                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                                 ) {
                                     AsyncImage(
                                         model = option.imageUrl,
                                         contentDescription = null,
-                                        modifier = Modifier.fillMaxSize(),
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .clip(cardShape),
                                         contentScale = ContentScale.Fit
                                     )
                                 }

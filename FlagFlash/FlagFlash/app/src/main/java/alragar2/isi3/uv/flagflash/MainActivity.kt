@@ -23,6 +23,8 @@ class MainActivity : ComponentActivity() {
         val isLoggedIn = FirebaseAuth.getInstance().currentUser != null
         val startDest = if (isLoggedIn) NavRoutes.MAIN else NavRoutes.LOGIN
 
+        InterstitialAdManager.loadAd(this)
+
         setContent {
             FlagFlashTheme {
                 FlagFlashNavGraph(startDestination = startDest)

@@ -77,7 +77,7 @@ fun TiendaScreen(
                 modifier = Modifier
                     .shadow(4.dp, RoundedCornerShape(16.dp))
                     .clip(RoundedCornerShape(16.dp))
-                    .background(SurfaceOverlay)
+                    .background(Color.White)
                     .padding(horizontal = 12.dp, vertical = 6.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -114,7 +114,7 @@ fun TiendaScreen(
                     modifier = Modifier
                         .shadow(6.dp, RoundedCornerShape(20.dp))
                         .clip(RoundedCornerShape(20.dp))
-                        .background(SurfaceOverlay)
+                        .background(Color.White)
                         .padding(20.dp)
                 ) {
                     Text("🍖 Comida para mascotas", fontWeight = FontWeight.ExtraBold, style = MaterialTheme.typography.titleLarge, color = TextPrimary)
@@ -258,7 +258,7 @@ private fun PetCard(
             .fillMaxWidth()
             .shadow(4.dp, RoundedCornerShape(16.dp))
             .clip(RoundedCornerShape(16.dp))
-            .background(if (isSelected) SkyBlue.copy(0.3f) else SurfaceOverlay)
+            .background(if (isSelected) Color(0xFFE0F2FE) else Color.White)
             .clickable(enabled = isOwned && !isSelected) { onSelect() }
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -313,7 +313,7 @@ private fun CosmeticCard(
             .fillMaxWidth()
             .shadow(4.dp, RoundedCornerShape(16.dp))
             .clip(RoundedCornerShape(16.dp))
-            .background(if (isSelected) Color(0xFF8B5CF6).copy(alpha = 0.3f) else SurfaceOverlay)
+            .background(if (isSelected) Color(0xFFF3E8FF) else Color.White)
             .clickable(enabled = isOwned && !isSelected) { onSelect() }
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically

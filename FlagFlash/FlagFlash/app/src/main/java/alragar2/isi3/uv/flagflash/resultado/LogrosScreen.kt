@@ -91,7 +91,7 @@ fun LogrosScreen(userPreferences: UserPreferences, onBack: () -> Unit) {
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 8.dp)
                     .shadow(4.dp, RoundedCornerShape(16.dp))
-                    .background(SurfaceOverlay)
+                    .background(Color.White)
                     .padding(16.dp),
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
@@ -131,7 +131,7 @@ fun AchievementCard(ach: AchievementDef, isUnlocked: Boolean) {
             .fillMaxWidth()
             .shadow(if (isUnlocked) 6.dp else 1.dp, RoundedCornerShape(16.dp))
             .clip(RoundedCornerShape(16.dp))
-            .background(if (isUnlocked) SurfaceOverlay else SurfaceOverlay.copy(alpha = 0.5f))
+            .background(if (isUnlocked) Color.White else Color(0xFFE2E8F0))
             .alpha(if (isUnlocked) 1f else 0.6f)
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically

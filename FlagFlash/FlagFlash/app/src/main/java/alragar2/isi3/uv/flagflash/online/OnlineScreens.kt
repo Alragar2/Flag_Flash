@@ -96,7 +96,7 @@ fun CreateRoomScreen(viewModel: OnlineGameViewModel, onRoomCreated: (code: Strin
                     modifier = Modifier.fillMaxWidth()
                         .shadow(if (isSelected) 6.dp else 2.dp, RoundedCornerShape(14.dp))
                         .clip(RoundedCornerShape(14.dp))
-                        .background(if (isSelected) DeepSkyBlue else SurfaceOverlay)
+                        .background(if (isSelected) DeepSkyBlue else Color.White)
                         .clickable { selectedMode = mode }
                         .padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -177,6 +177,7 @@ fun WaitingRoomScreen(viewModel: OnlineGameViewModel, onGameStarted: () -> Unit,
     val state by viewModel.state.collectAsState()
     val room = state.room
     val isHost = room?.hostUid == state.myUid
+    val context = androidx.compose.ui.platform.LocalContext.current
 
     LaunchedEffect(room?.status) {
         if (room?.status == "IN_PROGRESS") onGameStarted()
@@ -192,11 +193,21 @@ fun WaitingRoomScreen(viewModel: OnlineGameViewModel, onGameStarted: () -> Unit,
             // Room code
             Column(
                 modifier = Modifier.fillMaxWidth().shadow(6.dp, RoundedCornerShape(20.dp)).clip(RoundedCornerShape(20.dp))
-                    .background(SurfaceOverlay).padding(20.dp),
+                    .background(Color.White).padding(20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text("Código de sala", style = MaterialTheme.typography.bodyLarge, color = TextSecondary)
-                Text(state.roomCode, style = MaterialTheme.typography.displayMedium, fontWeight = FontWeight.ExtraBold, color = DeepSkyBlue, letterSpacing = 8.sp)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(state.roomCode, style = MaterialTheme.typography.displayMedium, fontWeight = FontWeight.ExtraBold, color = DeepSkyBlue, letterSpacing = 8.sp)
+                    IconButton(onClick = {
+                        val clipboardManager = context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                        val clip = android.content.ClipData.newPlainText("Código de Sala", state.roomCode)
+                        clipboardManager.setPrimaryClip(clip)
+                        android.widget.Toast.makeText(context, "Código copiado", android.widget.Toast.LENGTH_SHORT).show()
+                    }) {
+                        Icon(androidx.compose.material.icons.Icons.Default.Share, contentDescription = "Copiar código", tint = DeepSkyBlue)
+                    }
+                }
                 Text("Comparte este código con tus amigos", style = MaterialTheme.typography.bodyMedium, color = TextSecondary, textAlign = TextAlign.Center)
             }
 
@@ -205,7 +216,7 @@ fun WaitingRoomScreen(viewModel: OnlineGameViewModel, onGameStarted: () -> Unit,
                 items(room?.players?.values?.toList() ?: emptyList()) { player ->
                     Row(
                         modifier = Modifier.fillMaxWidth().shadow(2.dp, RoundedCornerShape(12.dp)).clip(RoundedCornerShape(12.dp))
-                            .background(SurfaceOverlay).padding(12.dp),
+                            .background(Color.White).padding(12.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
@@ -282,7 +293,7 @@ fun OnlineGameScreen(viewModel: OnlineGameViewModel, onGameOver: () -> Unit) {
                     LazyColumn(modifier = Modifier.height(100.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         items(players.values.sortedByDescending { it.score }) { player ->
                             Row(modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp))
-                                .background(if (player.uid == state.myUid) DeepSkyBlue.copy(0.2f) else SurfaceOverlay)
+                                .background(if (player.uid == state.myUid) Color(0xFFE0F2FE) else Color.White)
                                 .padding(horizontal = 12.dp, vertical = 6.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
@@ -343,7 +354,12 @@ fun OnlineGameScreen(viewModel: OnlineGameViewModel, onGameOver: () -> Unit) {
                             contentAlignment = Alignment.Center
                         ) {
                             if (opt.startsWith("http")) {
-                                AsyncImage(model = opt, contentDescription = null, contentScale = ContentScale.Fit, modifier = Modifier.fillMaxSize())
+                                AsyncImage(
+                                    model = opt,
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Fit,
+                                    modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(14.dp))
+                                )
                             } else {
                                 Text(opt, color = Color.White, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, modifier = Modifier.padding(horizontal = 8.dp))
                             }
@@ -397,7 +413,7 @@ fun OnlineResultScreen(viewModel: OnlineGameViewModel, onMainMenu: () -> Unit) {
                     modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
                         .shadow(if (player.uid == state.myUid) 6.dp else 2.dp, RoundedCornerShape(12.dp))
                         .clip(RoundedCornerShape(12.dp))
-                        .background(if (player.uid == state.myUid) DeepSkyBlue.copy(0.2f) else SurfaceOverlay)
+                        .background(if (player.uid == state.myUid) Color(0xFFE0F2FE) else Color.White)
                         .padding(12.dp),
                     horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically
                 ) {

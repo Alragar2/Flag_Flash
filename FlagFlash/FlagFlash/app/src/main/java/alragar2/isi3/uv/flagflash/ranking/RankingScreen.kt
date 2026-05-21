@@ -128,7 +128,7 @@ private fun PodiumSection(players: List<Player>) {
             .padding(horizontal = 16.dp)
             .shadow(8.dp, RoundedCornerShape(20.dp))
             .clip(RoundedCornerShape(20.dp))
-            .background(SurfaceOverlay)
+            .background(Color.White)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -174,7 +174,7 @@ private fun PlayerRow(position: Int, player: Player) {
             .fillMaxWidth()
             .shadow(2.dp, RoundedCornerShape(12.dp))
             .clip(RoundedCornerShape(12.dp))
-            .background(SurfaceOverlay)
+            .background(Color.White)
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween

@@ -44,8 +44,12 @@ fun VictoriaIndividualScreen(
     val precision = if (10 + mistakes > 0) (10.0 / (10.0 + mistakes) * 100).toInt() else 100
     val coinsGained = 10
 
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val activity = context as? android.app.Activity
+
     LaunchedEffect(Unit) {
         userPreferences.getCoins { c -> userPreferences.setCoins(c + coinsGained) }
+        activity?.let { alragar2.isi3.uv.flagflash.InterstitialAdManager.showAdWithProbability(it, 0.4f) }
     }
 
     val confettiParty = remember {
@@ -132,6 +136,12 @@ fun DerrotaIndividualScreen(
     onMainMenu: () -> Unit
 ) {
     val bgGradient = Brush.verticalGradient(listOf(Color(0xFFFCA5A5), Color(0xFFBFF3FF)))
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val activity = context as? android.app.Activity
+
+    LaunchedEffect(Unit) {
+        activity?.let { alragar2.isi3.uv.flagflash.InterstitialAdManager.showAdWithProbability(it, 0.4f) }
+    }
 
     Box(
         modifier = Modifier.fillMaxSize().background(bgGradient),
@@ -191,8 +201,8 @@ private fun ResultStatCard(label: String, value: String, modifier: Modifier = Mo
     Column(
         modifier = modifier
             .shadow(4.dp, RoundedCornerShape(16.dp))
+            .background(Color.White, RoundedCornerShape(16.dp))
             .clip(RoundedCornerShape(16.dp))
-            .background(SurfaceOverlay)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

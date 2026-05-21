@@ -21,6 +21,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.painterResource
+import alragar2.isi3.uv.flagflash.R
 import alragar2.isi3.uv.flagflash.UserPreferences
 import alragar2.isi3.uv.flagflash.ui.theme.*
 import com.google.firebase.auth.FirebaseAuth
@@ -96,8 +98,8 @@ fun MainScreen(
                 IconButton(
                     onClick = { showOptionsSheet = true },
                     modifier = Modifier
-                        .clip(CircleShape)
-                        .background(SurfaceOverlay)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(SurfaceOverlay, RoundedCornerShape(12.dp))
                         .size(48.dp)
                 ) {
                     Icon(Icons.Default.Person, contentDescription = "Perfil", tint = DeepSkyBlue)
@@ -209,8 +211,8 @@ private fun StatCard(label: String, value: String, emoji: String, modifier: Modi
     Column(
         modifier = modifier
             .shadow(4.dp, RoundedCornerShape(16.dp))
+            .background(Color.White, RoundedCornerShape(16.dp))
             .clip(RoundedCornerShape(16.dp))
-            .background(SurfaceOverlay)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -294,10 +296,18 @@ private fun PulsingGlobe() {
         ),
         label = "globeScale"
     )
-    Text(
-        text = "🌍",
-        fontSize = (90 * scale).sp,
-        textAlign = TextAlign.Center,
-        modifier = Modifier.fillMaxWidth()
-    )
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .scale(scale),
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.icono),
+            contentDescription = "Icono App",
+            modifier = Modifier
+                .size(130.dp)
+                .clip(RoundedCornerShape(24.dp))
+        )
+    }
 }

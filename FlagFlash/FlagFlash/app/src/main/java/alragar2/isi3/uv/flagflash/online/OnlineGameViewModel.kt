@@ -31,6 +31,15 @@ class OnlineGameViewModel(application: Application) : AndroidViewModel(applicati
     private val _state = MutableStateFlow(OnlineGameUiState(myUid = repo.myUid))
     val state: StateFlow<OnlineGameUiState> = _state.asStateFlow()
 
+    fun resetState() {
+        _state.value = OnlineGameUiState(myUid = repo.myUid)
+    }
+
+    fun setRoomCodeAndObserve(code: String) {
+        _state.value = _state.value.copy(roomCode = code)
+        observeRoom(code)
+    }
+
     // ── Room creation/joining ─────────────────────────────────────────────
 
     fun createRoom(gameMode: String) {

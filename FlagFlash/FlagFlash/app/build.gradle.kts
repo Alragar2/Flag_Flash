@@ -89,7 +89,6 @@ dependencies {
 
     // Google Ads
     implementation("com.google.android.gms:play-services-ads:23.2.0")
-    implementation("com.google.android.gms:play-services-ads-lite:23.2.0")
     implementation("com.google.android.gms:play-services-ads-identifier:18.0.1")
 
     // Room

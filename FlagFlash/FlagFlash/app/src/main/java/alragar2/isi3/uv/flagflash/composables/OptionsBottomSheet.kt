@@ -74,7 +74,7 @@ fun OptionsBottomSheet(
                     .fillMaxWidth()
                     .shadow(4.dp, RoundedCornerShape(16.dp))
                     .clip(RoundedCornerShape(16.dp))
-                    .background(SurfaceOverlay)
+                    .background(Color.White)
                     .padding(16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
@@ -105,7 +105,7 @@ fun OptionsBottomSheet(
                             modifier = Modifier
                                 .shadow(if (isSelected) 6.dp else 2.dp, CircleShape)
                                 .clip(CircleShape)
-                                .background(if (isSelected) DeepSkyBlue else SurfaceOverlay)
+                                .background(if (isSelected) DeepSkyBlue else Color.White)
                                 .padding(12.dp)
                                 .clickable {
                                     userPreferences.setSelectedPet(petId)
