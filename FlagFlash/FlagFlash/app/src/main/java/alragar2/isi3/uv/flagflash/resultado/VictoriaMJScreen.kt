@@ -25,6 +25,9 @@ import nl.dionsegijn.konfetti.core.Party
 import nl.dionsegijn.konfetti.core.Position
 import nl.dionsegijn.konfetti.core.emitter.Emitter
 import java.util.concurrent.TimeUnit
+import alragar2.isi3.uv.flagflash.R
+import alragar2.isi3.uv.flagflash.musica.SoundEffectsManager
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun VictoriaMJScreen(
@@ -38,6 +41,13 @@ fun VictoriaMJScreen(
         player1Score > player2Score -> "Jugador 1"
         player2Score > player1Score -> "Jugador 2"
         else -> null // Empate
+    }
+
+    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        if (winner != null) {
+            SoundEffectsManager.playSound(context, R.raw.win)
+        }
     }
 
     val confettiParty = remember {

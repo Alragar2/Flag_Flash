@@ -19,9 +19,13 @@ class MusicService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (!mediaPlayer.isPlaying) {
-            mediaPlayer.seekTo(pausePosition)
-            mediaPlayer.start()
+        val userPrefs = alragar2.isi3.uv.flagflash.UserPreferences(this)
+        val action = intent?.action
+
+        if (action == "PAUSE" || !userPrefs.isMusicEnabled()) {
+            pauseMusic()
+        } else {
+            resumeMusic()
         }
         return START_STICKY
     }

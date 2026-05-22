@@ -1,5 +1,6 @@
 package alragar2.isi3.uv.flagflash.ranking
 
+import alragar2.isi3.uv.flagflash.ShopRegistry
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -29,18 +30,8 @@ data class Player(val name: String, val score: Int, val avatar: String = "defaul
 
 @Composable
 fun PlayerAvatar(avatar: String, frame: String, size: androidx.compose.ui.unit.Dp = 40.dp) {
-    val avatarEmoji = when (avatar) {
-        "ninja" -> "🥷"
-        "robot" -> "🤖"
-        "king" -> "👑"
-        else -> "👽"
-    }
-    val frameBorder = when (frame) {
-        "bronze" -> androidx.compose.foundation.BorderStroke(2.dp, Color(0xFFCD7F32))
-        "gold" -> androidx.compose.foundation.BorderStroke(2.dp, Color(0xFFFFD700))
-        "fire" -> androidx.compose.foundation.BorderStroke(2.dp, Color(0xFFFF4500))
-        else -> null
-    }
+    val avatarEmoji = ShopRegistry.getAvatarEmoji(avatar)
+    val frameBorder = ShopRegistry.getFrameBorder(frame)
 
     var modifier = Modifier
         .size(size)

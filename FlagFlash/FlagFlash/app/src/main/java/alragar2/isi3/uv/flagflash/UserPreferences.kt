@@ -5,6 +5,7 @@ import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.FieldValue
 
 class UserPreferences(context: Context) {
     private val sharedPreferences = context.getSharedPreferences("score_prefs", Context.MODE_PRIVATE)
@@ -85,14 +86,8 @@ class UserPreferences(context: Context) {
     fun addOwnedPet(petId: String) {
         val userId = auth.currentUser?.uid
         if (userId != null) {
-            getOwnedPets { currentPets ->
-                if (!currentPets.contains(petId)) {
-                    val newPets = currentPets.toMutableList()
-                    newPets.add(petId)
-                    val data = hashMapOf("ownedPets" to newPets)
-                    firestore.collection("users").document(userId).set(data, SetOptions.merge())
-                }
-            }
+            val data = mapOf("ownedPets" to FieldValue.arrayUnion(petId))
+            firestore.collection("users").document(userId).set(data, SetOptions.merge())
         }
     }
 
@@ -117,21 +112,30 @@ class UserPreferences(context: Context) {
         val userId = auth.currentUser?.uid
         if (userId != null) {
             firestore.collection("users").document(userId).get().addOnSuccessListener { documentSnapshot ->
-                val fedStates = documentSnapshot.get("petFedStates") as? Map<String, Boolean> ?: emptyMap()
-                onComplete(fedStates[petId] ?: false)
+                val fedStates = documentSnapshot.get("petFedStates") as? Map<String, Any> ?: emptyMap()
+                val fed = fedStates[petId] as? Boolean ?: false
+                onComplete(fed)
             }.addOnFailureListener { onComplete(false) }
         } else { onComplete(false) }
+    }
+
+    fun getPetFedStates(onComplete: (Map<String, Boolean>) -> Unit) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            firestore.collection("users").document(userId).get().addOnSuccessListener { documentSnapshot ->
+                val fedStates = documentSnapshot.get("petFedStates") as? Map<String, Any> ?: emptyMap()
+                val result = fedStates.mapValues { it.value as? Boolean ?: false }
+                onComplete(result)
+            }.addOnFailureListener { onComplete(emptyMap()) }
+        } else { onComplete(emptyMap()) }
     }
 
     fun setPetFed(petId: String, fed: Boolean) {
         val userId = auth.currentUser?.uid
         if (userId != null) {
-            firestore.collection("users").document(userId).get().addOnSuccessListener { documentSnapshot ->
-                val fedStates = (documentSnapshot.get("petFedStates") as? Map<String, Boolean> ?: emptyMap()).toMutableMap()
-                fedStates[petId] = fed
-                val data = hashMapOf("petFedStates" to fedStates)
-                firestore.collection("users").document(userId).set(data, SetOptions.merge())
-            }
+            val data = mapOf("petFedStates" to mapOf(petId to fed))
+            firestore.collection("users").document(userId).set(data, SetOptions.merge())
+                .addOnFailureListener { e -> Log.e("UserPreferences", "Error setting pet fed state", e) }
         }
     }
 
@@ -148,14 +152,8 @@ class UserPreferences(context: Context) {
     fun addDiscoveredCountry(countryName: String) {
         val userId = auth.currentUser?.uid
         if (userId != null) {
-            getDiscoveredCountries { currentCountries ->
-                if (!currentCountries.contains(countryName)) {
-                    val newCountries = currentCountries.toMutableList()
-                    newCountries.add(countryName)
-                    val data = hashMapOf("discoveredCountries" to newCountries)
-                    firestore.collection("users").document(userId).set(data, SetOptions.merge())
-                }
-            }
+            val data = mapOf("discoveredCountries" to FieldValue.arrayUnion(countryName))
+            firestore.collection("users").document(userId).set(data, SetOptions.merge())
         }
     }
 
@@ -231,14 +229,8 @@ class UserPreferences(context: Context) {
     fun addOwnedCosmetic(cosmeticId: String) {
         val userId = auth.currentUser?.uid
         if (userId != null) {
-            getOwnedCosmetics { current ->
-                if (!current.contains(cosmeticId)) {
-                    val newCosmetics = current.toMutableList()
-                    newCosmetics.add(cosmeticId)
-                    val data = hashMapOf("ownedCosmetics" to newCosmetics)
-                    firestore.collection("users").document(userId).set(data, SetOptions.merge())
-                }
-            }
+            val data = mapOf("ownedCosmetics" to FieldValue.arrayUnion(cosmeticId))
+            firestore.collection("users").document(userId).set(data, SetOptions.merge())
         }
     }
 
@@ -343,5 +335,21 @@ class UserPreferences(context: Context) {
                 onComplete(cAnswers, sMax, tMax)
             }.addOnFailureListener { onComplete(0L, 0L, 0L) }
         } else { onComplete(0L, 0L, 0L) }
+    }
+
+    fun isMusicEnabled(): Boolean {
+        return sharedPreferences.getBoolean("music_enabled", true)
+    }
+
+    fun setMusicEnabled(enabled: Boolean) {
+        sharedPreferences.edit().putBoolean("music_enabled", enabled).apply()
+    }
+
+    fun isSoundEffectsEnabled(): Boolean {
+        return sharedPreferences.getBoolean("sound_effects_enabled", true)
+    }
+
+    fun setSoundEffectsEnabled(enabled: Boolean) {
+        sharedPreferences.edit().putBoolean("sound_effects_enabled", enabled).apply()
     }
 }

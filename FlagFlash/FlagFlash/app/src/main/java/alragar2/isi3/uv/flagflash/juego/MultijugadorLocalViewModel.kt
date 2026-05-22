@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import alragar2.isi3.uv.flagflash.R
+import alragar2.isi3.uv.flagflash.musica.SoundEffectsManager
 
 enum class MultiGameMode { BANDERA, PAIS, CAPITAL }
 
@@ -112,6 +114,13 @@ class MultijugadorLocalViewModel(application: Application) : AndroidViewModel(ap
         if (_state.value.selectedByP1 != null) return
         val correct = option == _state.value.question?.correctOption
         val newScore = if (correct) _state.value.player1Score + 1 else _state.value.player1Score
+        
+        if (correct) {
+            SoundEffectsManager.playSound(getApplication(), R.raw.correct_answer)
+        } else {
+            SoundEffectsManager.playSound(getApplication(), R.raw.wrong_answer)
+        }
+
         _state.value = _state.value.copy(
             selectedByP1 = option,
             player1Score = newScore,
@@ -124,6 +133,13 @@ class MultijugadorLocalViewModel(application: Application) : AndroidViewModel(ap
         if (_state.value.selectedByP2 != null) return
         val correct = option == _state.value.question?.correctOption
         val newScore = if (correct) _state.value.player2Score + 1 else _state.value.player2Score
+
+        if (correct) {
+            SoundEffectsManager.playSound(getApplication(), R.raw.correct_answer)
+        } else {
+            SoundEffectsManager.playSound(getApplication(), R.raw.wrong_answer)
+        }
+
         _state.value = _state.value.copy(
             selectedByP2 = option,
             player2Score = newScore,

@@ -2,6 +2,8 @@ package alragar2.isi3.uv.flagflash.juego.compose
 
 import alragar2.isi3.uv.flagflash.UserPreferences
 import alragar2.isi3.uv.flagflash.UserScoreManager
+import alragar2.isi3.uv.flagflash.R
+import alragar2.isi3.uv.flagflash.musica.SoundEffectsManager
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
@@ -181,6 +183,12 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             selectedOption = option,
             showResultTick = isCorrect
         )
+
+        if (isCorrect) {
+            SoundEffectsManager.playSound(getApplication(), R.raw.correct_answer)
+        } else {
+            SoundEffectsManager.playSound(getApplication(), R.raw.wrong_answer)
+        }
 
         viewModelScope.launch {
             if (isCorrect) {

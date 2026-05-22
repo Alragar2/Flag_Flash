@@ -1,5 +1,6 @@
 package alragar2.isi3.uv.flagflash
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -44,6 +46,7 @@ fun TiendaScreen(
         userPreferences.getFoodCount { foodCount = it }
         userPreferences.getSelectedPet { selectedPet = it }
         userPreferences.getOwnedPets { ownedPets = it }
+        userPreferences.getPetFedStates { fedStates = it }
         userPreferences.getAvatar { currentAvatar = it }
         userPreferences.getFrame { currentFrame = it }
         userPreferences.getOwnedCosmetics { ownedCosmetics = it }
@@ -117,7 +120,15 @@ fun TiendaScreen(
                         .background(Color.White)
                         .padding(20.dp)
                 ) {
-                    Text("🍖 Comida para mascotas", fontWeight = FontWeight.ExtraBold, style = MaterialTheme.typography.titleLarge, color = TextPrimary)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Image(
+                            painter = painterResource(id = R.drawable.alimento),
+                            contentDescription = "Comida",
+                            modifier = Modifier.size(32.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Comida para mascotas", fontWeight = FontWeight.ExtraBold, style = MaterialTheme.typography.titleLarge, color = TextPrimary)
+                    }
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                         Text("Stock: x$foodCount", style = MaterialTheme.typography.bodyLarge, color = TextSecondary)
@@ -141,69 +152,57 @@ fun TiendaScreen(
                 // Pets section
                 Text("Mascotas", fontWeight = FontWeight.ExtraBold, style = MaterialTheme.typography.headlineMedium, color = TextPrimary)
 
-                val pets = listOf(
-                    Triple("buho",    "🦉 Búho",    "Elimina 2 opciones incorrectas"),
-                    Triple("gato",    "🐱 Gato",    "Segunda oportunidad al perder"),
-                    Triple("tortuga", "🐢 Tortuga", "Anula la penalización de un fallo")
-                )
-
-                pets.forEach { (petId, petName, desc) ->
+                ShopRegistry.pets.forEach { pet ->
                     PetCard(
-                        petId = petId,
-                        petName = petName,
-                        description = desc,
-                        isOwned = ownedPets.contains(petId),
-                        isSelected = selectedPet == petId,
-                        isFed = fedStates[petId] == true,
+                        petId = pet.id,
+                        petName = pet.name,
+                        description = pet.description,
+                        price = pet.price,
+                        isOwned = ownedPets.contains(pet.id),
+                        isSelected = selectedPet == pet.id,
+                        isFed = fedStates[pet.id] == true,
                         coins = currentCoins,
                         onBuy = {
-                            if (currentCoins >= 2000) {
-                                currentCoins -= 2000
+                            if (currentCoins >= pet.price) {
+                                currentCoins -= pet.price
                                 userPreferences.setCoins(currentCoins)
-                                userPreferences.addOwnedPet(petId)
-                                userPreferences.setSelectedPet(petId)
-                                userPreferences.setPetFed(petId, false)
-                                ownedPets = ownedPets + petId
-                                selectedPet = petId
-                                fedStates = fedStates.toMutableMap().also { it[petId] = false }
+                                userPreferences.addOwnedPet(pet.id)
+                                userPreferences.setSelectedPet(pet.id)
+                                userPreferences.setPetFed(pet.id, false)
+                                ownedPets = ownedPets + pet.id
+                                selectedPet = pet.id
+                                fedStates = fedStates.toMutableMap().also { it[pet.id] = false }
                             }
                         },
                         onSelect = {
-                            userPreferences.setSelectedPet(petId)
-                            selectedPet = petId
+                            userPreferences.setSelectedPet(pet.id)
+                            selectedPet = pet.id
                         }
                     )
                 }
             } else {
                 // Cosmetics Section
                 Text("Avatares", fontWeight = FontWeight.ExtraBold, style = MaterialTheme.typography.headlineMedium, color = TextPrimary)
-                
-                val avatars = listOf(
-                    Triple("default", "👽 Alien", 0),
-                    Triple("ninja", "🥷 Ninja", 500),
-                    Triple("robot", "🤖 Robot", 500),
-                    Triple("king", "👑 Rey", 1000)
-                )
 
-                avatars.forEach { (id, name, price) ->
+                ShopRegistry.avatars.forEach { avatar ->
                     CosmeticCard(
-                        id = id, name = name, type = "Avatar", price = price,
-                        isOwned = id == "default" || ownedCosmetics.contains(id),
-                        isSelected = currentAvatar == id,
+                        id = avatar.id, name = avatar.name, type = "Avatar", price = avatar.price,
+                        isOwned = avatar.id == "default" || ownedCosmetics.contains(avatar.id),
+                        isSelected = currentAvatar == avatar.id,
                         coins = currentCoins,
                         onBuy = {
-                            if (currentCoins >= price) {
-                                currentCoins -= price
+                            if (currentCoins >= avatar.price) {
+                                currentCoins -= avatar.price
                                 userPreferences.setCoins(currentCoins)
-                                userPreferences.addOwnedCosmetic(id)
-                                userPreferences.setAvatar(id)
-                                ownedCosmetics = ownedCosmetics + id
-                                currentAvatar = id
+                                userPreferences.addOwnedCosmetic(avatar.id)
+                                userPreferences.setAvatar(avatar.id)
+                                ownedCosmetics = ownedCosmetics + avatar.id
+                                currentAvatar = avatar.id
                             }
                         },
                         onSelect = {
-                            userPreferences.setAvatar(id)
-                            currentAvatar = id
+                            userPreferences.setAvatar(avatar.id)
+                            currentAvatar = avatar.id
                         }
                     )
                 }
@@ -211,32 +210,25 @@ fun TiendaScreen(
                 Spacer(modifier = Modifier.height(16.dp))
                 Text("Marcos de Perfil", fontWeight = FontWeight.ExtraBold, style = MaterialTheme.typography.headlineMedium, color = TextPrimary)
 
-                val frames = listOf(
-                    Triple("none", "Ninguno", 0),
-                    Triple("bronze", "Marco de Bronce", 1000),
-                    Triple("gold", "Marco de Oro", 2500),
-                    Triple("fire", "Marco de Fuego", 5000)
-                )
-
-                frames.forEach { (id, name, price) ->
+                ShopRegistry.frames.forEach { frame ->
                     CosmeticCard(
-                        id = id, name = name, type = "Marco", price = price,
-                        isOwned = id == "none" || ownedCosmetics.contains(id),
-                        isSelected = currentFrame == id,
+                        id = frame.id, name = frame.name, type = "Marco", price = frame.price,
+                        isOwned = frame.id == "none" || ownedCosmetics.contains(frame.id),
+                        isSelected = currentFrame == frame.id,
                         coins = currentCoins,
                         onBuy = {
-                            if (currentCoins >= price) {
-                                currentCoins -= price
+                            if (currentCoins >= frame.price) {
+                                currentCoins -= frame.price
                                 userPreferences.setCoins(currentCoins)
-                                userPreferences.addOwnedCosmetic(id)
-                                userPreferences.setFrame(id)
-                                ownedCosmetics = ownedCosmetics + id
-                                currentFrame = id
+                                userPreferences.addOwnedCosmetic(frame.id)
+                                userPreferences.setFrame(frame.id)
+                                ownedCosmetics = ownedCosmetics + frame.id
+                                currentFrame = frame.id
                             }
                         },
                         onSelect = {
-                            userPreferences.setFrame(id)
-                            currentFrame = id
+                            userPreferences.setFrame(frame.id)
+                            currentFrame = frame.id
                         }
                     )
                 }
@@ -249,7 +241,7 @@ fun TiendaScreen(
 
 @Composable
 private fun PetCard(
-    petId: String, petName: String, description: String,
+    petId: String, petName: String, description: String, price: Int,
     isOwned: Boolean, isSelected: Boolean, isFed: Boolean,
     coins: Int, onBuy: () -> Unit, onSelect: () -> Unit
 ) {
@@ -263,15 +255,23 @@ private fun PetCard(
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        val emoji = when(petId) { "buho" -> "🦉"; "gato" -> "🐱"; "tortuga" -> "🐢"; else -> "🐾" }
-        Text(emoji, fontSize = 40.sp)
+        val imageRes = ShopRegistry.getPetImage(petId) ?: R.drawable.buho
+        Image(
+            painter = painterResource(id = imageRes),
+            contentDescription = petName,
+            modifier = Modifier.size(50.dp)
+        )
         Spacer(modifier = Modifier.width(12.dp))
         Column(modifier = Modifier.weight(1f)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(petName, fontWeight = FontWeight.ExtraBold, color = TextPrimary, style = MaterialTheme.typography.titleLarge)
                 if (isSelected) {
                     Spacer(modifier = Modifier.width(8.dp))
-                    Badge(containerColor = GreenCorrect) { Text("ACTIVA", color = Color.White, fontSize = 10.sp, fontWeight = FontWeight.ExtraBold) }
+                    val badgeColor = if (isFed) GreenCorrect else Color(0xFFF97316)
+                    val badgeText = if (isFed) "ACTIVA" else "HAMBRIENTA"
+                    Badge(containerColor = badgeColor) {
+                        Text(badgeText, color = Color.White, fontSize = 10.sp, fontWeight = FontWeight.ExtraBold)
+                    }
                 }
                 if (isFed && isOwned) {
                     Spacer(modifier = Modifier.width(4.dp))
@@ -283,11 +283,11 @@ private fun PetCard(
         Spacer(modifier = Modifier.width(12.dp))
         if (!isOwned) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("2000 🪙", fontWeight = FontWeight.ExtraBold, color = Gold, fontSize = 14.sp)
+                Text("$price 🪙", fontWeight = FontWeight.ExtraBold, color = Gold, fontSize = 14.sp)
                 Spacer(modifier = Modifier.height(4.dp))
                 Button(
                     onClick = onBuy,
-                    enabled = coins >= 2000,
+                    enabled = coins >= price,
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF59E0B)),
                     contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
                 ) { Text("Comprar", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 13.sp) }
@@ -318,14 +318,9 @@ private fun CosmeticCard(
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        val emoji = when (id) {
-            "ninja" -> "🥷"
-            "robot" -> "🤖"
-            "king" -> "👑"
-            "bronze" -> "🟫"
-            "gold" -> "🟨"
-            "fire" -> "🔥"
-            else -> if (type == "Avatar") "👽" else "⬛"
+        val emoji = when (type) {
+            "Avatar" -> ShopRegistry.getAvatarEmoji(id)
+            else -> ShopRegistry.frames.find { it.id == id }?.emoji ?: "⬛"
         }
         Text(emoji, fontSize = 40.sp)
         Spacer(modifier = Modifier.width(12.dp))

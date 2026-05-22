@@ -139,7 +139,8 @@ fun FlagFlashNavGraph(startDestination: String) {
             val questions = back.arguments?.getString("questions") ?: "15"
             VictoriaIndividualScreen(
                 score = score, timeElapsed = timeElapsed, mistakes = mistakes,
-                originMode = originMode, continent = continent, userPreferences = userPreferences,
+                originMode = originMode, continent = continent, questions = questions,
+                userPreferences = userPreferences,
                 onPlayAgain = {
                     navController.navigate(NavRoutes.game(originMode, continent, gameType, questions)) {
                         popUpTo(NavRoutes.MAIN)

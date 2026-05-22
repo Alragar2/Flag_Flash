@@ -21,6 +21,8 @@ import androidx.compose.ui.unit.sp
 import alragar2.isi3.uv.flagflash.UserPreferences
 import alragar2.isi3.uv.flagflash.ui.components.FlagFlashButton
 import alragar2.isi3.uv.flagflash.ui.theme.*
+import alragar2.isi3.uv.flagflash.R
+import alragar2.isi3.uv.flagflash.musica.SoundEffectsManager
 import nl.dionsegijn.konfetti.compose.KonfettiView
 import nl.dionsegijn.konfetti.core.Party
 import nl.dionsegijn.konfetti.core.Position
@@ -35,14 +37,38 @@ fun VictoriaIndividualScreen(
     mistakes: Int,
     originMode: String,
     continent: String,
+    questions: String,
     userPreferences: UserPreferences,
     onPlayAgain: () -> Unit,
     onMainMenu: () -> Unit
 ) {
     val minutes = timeElapsed / 60
     val seconds = timeElapsed % 60
-    val precision = if (10 + mistakes > 0) (10.0 / (10.0 + mistakes) * 100).toInt() else 100
-    val coinsGained = 10
+    
+    val questionsCount = remember(questions) {
+        questions.toIntOrNull() ?: 10
+    }
+    
+    val precision = remember(questionsCount, mistakes) {
+        if (questionsCount + mistakes > 0) {
+            (questionsCount.toDouble() / (questionsCount + mistakes) * 100).toInt()
+        } else {
+            100
+        }
+    }
+    
+    val coinsGained = remember(questionsCount, timeElapsed) {
+        val baseCoins = questionsCount
+        val mult1 = 1.0 + (Math.random() * 0.3) // Entre x1 y x1.3
+        val isFast = timeElapsed <= 2 * questionsCount
+        val finalMultiplier = if (isFast) {
+            val mult2 = 1.7 + (Math.random() * 0.3) // Entre x1.7 y x2
+            mult1 + mult2
+        } else {
+            mult1
+        }
+        Math.round(baseCoins * finalMultiplier).toInt()
+    }
 
     val context = androidx.compose.ui.platform.LocalContext.current
     val activity = context as? android.app.Activity
@@ -50,6 +76,7 @@ fun VictoriaIndividualScreen(
     LaunchedEffect(Unit) {
         userPreferences.getCoins { c -> userPreferences.setCoins(c + coinsGained) }
         activity?.let { alragar2.isi3.uv.flagflash.InterstitialAdManager.showAdWithProbability(it, 0.4f) }
+        SoundEffectsManager.playSound(context, R.raw.win)
     }
 
     val confettiParty = remember {
@@ -141,6 +168,7 @@ fun DerrotaIndividualScreen(
 
     LaunchedEffect(Unit) {
         activity?.let { alragar2.isi3.uv.flagflash.InterstitialAdManager.showAdWithProbability(it, 0.4f) }
+        SoundEffectsManager.playSound(context, R.raw.game_over)
     }
 
     Box(

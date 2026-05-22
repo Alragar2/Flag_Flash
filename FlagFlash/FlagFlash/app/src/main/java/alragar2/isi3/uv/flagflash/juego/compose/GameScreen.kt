@@ -1,6 +1,7 @@
 package alragar2.isi3.uv.flagflash.juego.compose
 
 import alragar2.isi3.uv.flagflash.R
+import alragar2.isi3.uv.flagflash.ShopRegistry
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -74,12 +75,7 @@ fun GameScreen(
 
                     // Active Pet Icon
                     state.activePet?.let { pet ->
-                        val petIcon = when (pet) {
-                            "buho" -> R.drawable.buho
-                            "gato" -> R.drawable.gatito
-                            "tortuga" -> R.drawable.tortuguita
-                            else -> null
-                        }
+                        val petIcon = ShopRegistry.getPetImage(pet)
                         petIcon?.let {
                             val alpha by animateFloatAsState(if (state.isPetFed) 1f else 0.4f)
                             Image(
