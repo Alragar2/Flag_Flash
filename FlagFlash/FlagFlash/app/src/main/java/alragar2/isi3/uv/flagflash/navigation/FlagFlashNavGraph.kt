@@ -19,6 +19,8 @@ import alragar2.isi3.uv.flagflash.juego.MultijugadorLocalViewModel
 import alragar2.isi3.uv.flagflash.juego.compose.GameMode
 import alragar2.isi3.uv.flagflash.juego.compose.GameScreen
 import alragar2.isi3.uv.flagflash.juego.compose.GameViewModel
+import alragar2.isi3.uv.flagflash.juego.compose.EscribirPaisesScreen
+import alragar2.isi3.uv.flagflash.juego.compose.EscribirPaisesViewModel
 import alragar2.isi3.uv.flagflash.online.*
 import alragar2.isi3.uv.flagflash.ranking.RankingScreen
 import alragar2.isi3.uv.flagflash.resultado.*
@@ -95,26 +97,47 @@ fun FlagFlashNavGraph(startDestination: String) {
             val continent = back.arguments?.getString("continent") ?: "Todos"
             val typeStr = back.arguments?.getString("gameType") ?: "NORMAL"
             val questions = back.arguments?.getString("questions") ?: "15"
-            val mode = GameMode.valueOf(modeStr)
-            val gameType = alragar2.isi3.uv.flagflash.juego.compose.GameType.valueOf(typeStr)
-            val vm: GameViewModel = viewModel()
-            LaunchedEffect(mode, typeStr, questions) { vm.initGame(mode, continent, gameType, questions) }
-            GameScreen(
-                viewModel = vm,
-                mode = mode,
-                onNavigateBack = { navController.popBackStack() },
-                onGameFinished = { score, victory, timeElapsed, mistakes ->
-                    if (victory) {
-                        navController.navigate(NavRoutes.victoriaInd(score, timeElapsed, mistakes, modeStr, continent, typeStr, questions)) {
-                            popUpTo(NavRoutes.GAME) { inclusive = true }
-                        }
-                    } else {
-                        navController.navigate(NavRoutes.derrotaInd(score, modeStr, continent, typeStr, questions)) {
-                            popUpTo(NavRoutes.GAME) { inclusive = true }
+            
+            if (modeStr == "ESCRIBIR") {
+                val vm: EscribirPaisesViewModel = viewModel()
+                LaunchedEffect(continent) { vm.initGame(continent) }
+                EscribirPaisesScreen(
+                    viewModel = vm,
+                    onNavigateBack = { navController.popBackStack() },
+                    onGameFinished = { score, victory, timeElapsed, totalCount, guessedCount ->
+                        if (victory) {
+                            navController.navigate(NavRoutes.victoriaInd(score, timeElapsed, 0, modeStr, continent, typeStr, totalCount.toString())) {
+                                popUpTo(NavRoutes.GAME) { inclusive = true }
+                            }
+                        } else {
+                            navController.navigate(NavRoutes.derrotaInd(score, modeStr, continent, typeStr, totalCount.toString())) {
+                                popUpTo(NavRoutes.GAME) { inclusive = true }
+                            }
                         }
                     }
-                }
-            )
+                )
+            } else {
+                val mode = GameMode.valueOf(modeStr)
+                val gameType = alragar2.isi3.uv.flagflash.juego.compose.GameType.valueOf(typeStr)
+                val vm: GameViewModel = viewModel()
+                LaunchedEffect(mode, typeStr, questions) { vm.initGame(mode, continent, gameType, questions) }
+                GameScreen(
+                    viewModel = vm,
+                    mode = mode,
+                    onNavigateBack = { navController.popBackStack() },
+                    onGameFinished = { score, victory, timeElapsed, mistakes ->
+                        if (victory) {
+                            navController.navigate(NavRoutes.victoriaInd(score, timeElapsed, mistakes, modeStr, continent, typeStr, questions)) {
+                                popUpTo(NavRoutes.GAME) { inclusive = true }
+                            }
+                        } else {
+                            navController.navigate(NavRoutes.derrotaInd(score, modeStr, continent, typeStr, questions)) {
+                                popUpTo(NavRoutes.GAME) { inclusive = true }
+                            }
+                        }
+                    }
+                )
+            }
         }
 
         // ── Solo results ──────────────────────────────────────────────────

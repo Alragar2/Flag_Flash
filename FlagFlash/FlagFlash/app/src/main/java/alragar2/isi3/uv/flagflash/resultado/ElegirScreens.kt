@@ -73,7 +73,8 @@ fun ElegirJugarScreen(
         Triple("🚩", "Bandera", "BANDERA"),
         Triple("🗺️", "País", "PAIS"),
         Triple("🏛️", "Escudos", "ESCUDO"),
-        Triple("🏙️", "Capitales", "CAPITAL")
+        Triple("🏙️", "Capitales", "CAPITAL"),
+        Triple("✍️", "Escribir Países", "ESCRIBIR")
     )
 
     val bgGradient = Brush.verticalGradient(listOf(SkyBlue, BgLight))

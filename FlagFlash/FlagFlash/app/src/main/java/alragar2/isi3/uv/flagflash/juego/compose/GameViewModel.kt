@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
 
 class GameViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -74,19 +76,32 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private suspend fun loadUserStats() {
-        // Wrap callbacks in suspend if possible or just update state
-        userPreferences.getScore { score ->
-            _uiState.value = _uiState.value.copy(score = score)
-            userPreferences.setInitialScore(score)
+        val score = suspendCancellableCoroutine<Int> { continuation ->
+            userPreferences.getScore { scoreVal ->
+                continuation.resume(scoreVal)
+            }
         }
-        userPreferences.getSelectedPet { pet ->
-            _uiState.value = _uiState.value.copy(activePet = pet)
-            pet?.let {
-                userPreferences.isPetFed(it) { fed ->
-                    _uiState.value = _uiState.value.copy(isPetFed = fed)
+        userPreferences.setInitialScore(score)
+        
+        val activePet = suspendCancellableCoroutine<String?> { continuation ->
+            userPreferences.getSelectedPet { petVal ->
+                continuation.resume(petVal)
+            }
+        }
+        var isPetFed = false
+        if (activePet != null) {
+            isPetFed = suspendCancellableCoroutine<Boolean> { continuation ->
+                userPreferences.isPetFed(activePet) { fedVal ->
+                    continuation.resume(fedVal)
                 }
             }
         }
+
+        _uiState.value = _uiState.value.copy(
+            score = score,
+            activePet = activePet,
+            isPetFed = isPetFed
+        )
     }
 
     private suspend fun loadCountries() {
