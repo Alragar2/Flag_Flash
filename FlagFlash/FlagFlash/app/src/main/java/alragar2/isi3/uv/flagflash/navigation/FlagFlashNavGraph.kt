@@ -21,6 +21,9 @@ import alragar2.isi3.uv.flagflash.juego.compose.GameScreen
 import alragar2.isi3.uv.flagflash.juego.compose.GameViewModel
 import alragar2.isi3.uv.flagflash.juego.compose.EscribirPaisesScreen
 import alragar2.isi3.uv.flagflash.juego.compose.EscribirPaisesViewModel
+import alragar2.isi3.uv.flagflash.juego.compose.MasMenosScreen
+import alragar2.isi3.uv.flagflash.juego.compose.MasMenosViewModel
+import alragar2.isi3.uv.flagflash.juego.compose.MasMenosMetric
 import alragar2.isi3.uv.flagflash.online.*
 import alragar2.isi3.uv.flagflash.ranking.RankingScreen
 import alragar2.isi3.uv.flagflash.resultado.*
@@ -102,6 +105,28 @@ fun FlagFlashNavGraph(startDestination: String) {
                 val vm: EscribirPaisesViewModel = viewModel()
                 LaunchedEffect(continent) { vm.initGame(continent) }
                 EscribirPaisesScreen(
+                    viewModel = vm,
+                    onNavigateBack = { navController.popBackStack() },
+                    onGameFinished = { score, victory, timeElapsed, totalCount, guessedCount ->
+                        if (victory) {
+                            navController.navigate(NavRoutes.victoriaInd(score, timeElapsed, 0, modeStr, continent, typeStr, totalCount.toString())) {
+                                popUpTo(NavRoutes.GAME) { inclusive = true }
+                            }
+                        } else {
+                            navController.navigate(NavRoutes.derrotaInd(score, modeStr, continent, typeStr, totalCount.toString())) {
+                                popUpTo(NavRoutes.GAME) { inclusive = true }
+                            }
+                        }
+                    }
+                )
+            } else if (modeStr == "MAS_MENOS_POB" || modeStr == "MAS_MENOS_AREA") {
+                val vm: MasMenosViewModel = viewModel()
+                val metric = if (modeStr == "MAS_MENOS_POB") MasMenosMetric.POBLACION else MasMenosMetric.AREA
+                val gameType = alragar2.isi3.uv.flagflash.juego.compose.GameType.valueOf(typeStr)
+                LaunchedEffect(continent, metric, gameType, questions) {
+                    vm.initGame(continent, metric, gameType, questions)
+                }
+                MasMenosScreen(
                     viewModel = vm,
                     onNavigateBack = { navController.popBackStack() },
                     onGameFinished = { score, victory, timeElapsed, totalCount, guessedCount ->
