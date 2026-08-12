@@ -113,8 +113,8 @@ fun MainScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                StatCard(label = "Puntuación", value = userState.score.toString(), emoji = "⭐", modifier = Modifier.weight(1f))
-                StatCard(label = "Monedas", value = userState.coins.toString(), emoji = "🪙", modifier = Modifier.weight(1f))
+                StatCard(label = "Puntuación", value = userState.score.toString(), iconRes = R.drawable.points, modifier = Modifier.weight(1f))
+                StatCard(label = "Monedas", value = userState.coins.toString(), iconRes = R.drawable.moneda, modifier = Modifier.weight(1f))
             }
 
             Spacer(modifier = Modifier.height(28.dp))
@@ -207,7 +207,13 @@ fun MainScreen(
 }
 
 @Composable
-private fun StatCard(label: String, value: String, emoji: String, modifier: Modifier = Modifier) {
+private fun StatCard(
+    label: String,
+    value: String,
+    iconRes: Int? = null,
+    emoji: String? = null,
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier
             .shadow(4.dp, RoundedCornerShape(16.dp))
@@ -216,7 +222,16 @@ private fun StatCard(label: String, value: String, emoji: String, modifier: Modi
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = emoji, fontSize = 28.sp)
+        if (iconRes != null) {
+            Image(
+                painter = painterResource(id = iconRes),
+                contentDescription = null,
+                modifier = Modifier.size(32.dp)
+            )
+        } else if (emoji != null) {
+            Text(text = emoji, fontSize = 28.sp)
+        }
+        Spacer(modifier = Modifier.height(4.dp))
         Text(text = value, style = MaterialTheme.typography.headlineMedium, color = TextPrimary, fontWeight = FontWeight.ExtraBold)
         Text(text = label, style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
     }

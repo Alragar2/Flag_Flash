@@ -8,14 +8,14 @@ plugins {
 
 android {
     namespace = "alragar2.isi3.uv.flagflash"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "alragar2.isi3.uv.flagflash"
-        minSdk = 24
-        targetSdk = 35
-        versionCode = 11
-        versionName = "1.1.1"
+        minSdk = 26
+        targetSdk = 36
+        versionCode = 12
+        versionName = "1.2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

@@ -352,4 +352,28 @@ class UserPreferences(context: Context) {
     fun setSoundEffectsEnabled(enabled: Boolean) {
         sharedPreferences.edit().putBoolean("sound_effects_enabled", enabled).apply()
     }
+
+    fun getLastContinent(): String {
+        return sharedPreferences.getString("last_continent", "Europa") ?: "Europa"
+    }
+
+    fun setLastContinent(continent: String) {
+        sharedPreferences.edit().putString("last_continent", continent).apply()
+    }
+
+    fun getLastGameType(): String {
+        return sharedPreferences.getString("last_game_type", "NORMAL") ?: "NORMAL"
+    }
+
+    fun setLastGameType(type: String) {
+        sharedPreferences.edit().putString("last_game_type", type).apply()
+    }
+
+    fun getLastQuestions(): String {
+        return sharedPreferences.getString("last_questions", "10") ?: "10"
+    }
+
+    fun setLastQuestions(questions: String) {
+        sharedPreferences.edit().putString("last_questions", questions).apply()
+    }
 }

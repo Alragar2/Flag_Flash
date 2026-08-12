@@ -84,8 +84,12 @@ fun TiendaScreen(
                     .padding(horizontal = 12.dp, vertical = 6.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("🪙", fontSize = 18.sp)
-                Spacer(modifier = Modifier.width(4.dp))
+                Image(
+                    painter = painterResource(id = R.drawable.moneda),
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.width(6.dp))
                 Text("$currentCoins", fontWeight = FontWeight.ExtraBold, color = TextPrimary, fontSize = 16.sp)
             }
         }
@@ -133,7 +137,7 @@ fun TiendaScreen(
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                         Text("Stock: x$foodCount", style = MaterialTheme.typography.bodyLarge, color = TextSecondary)
                         FlagFlashButton(
-                            text = "Comprar (50 🪙)",
+                            text = "Comprar (50 monedas)",
                             onClick = {
                                 if (currentCoins >= 50) {
                                     currentCoins -= 50; foodCount += 1
@@ -283,7 +287,15 @@ private fun PetCard(
         Spacer(modifier = Modifier.width(12.dp))
         if (!isOwned) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("$price 🪙", fontWeight = FontWeight.ExtraBold, color = Gold, fontSize = 14.sp)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Image(
+                        painter = painterResource(id = R.drawable.moneda),
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(price.toString(), fontWeight = FontWeight.ExtraBold, color = Gold, fontSize = 14.sp)
+                }
                 Spacer(modifier = Modifier.height(4.dp))
                 Button(
                     onClick = onBuy,
@@ -337,7 +349,15 @@ private fun CosmeticCard(
         Spacer(modifier = Modifier.width(12.dp))
         if (!isOwned) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("$price 🪙", fontWeight = FontWeight.ExtraBold, color = Gold, fontSize = 14.sp)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Image(
+                        painter = painterResource(id = R.drawable.moneda),
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(price.toString(), fontWeight = FontWeight.ExtraBold, color = Gold, fontSize = 14.sp)
+                }
                 Spacer(modifier = Modifier.height(4.dp))
                 Button(
                     onClick = onBuy,

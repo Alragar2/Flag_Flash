@@ -42,9 +42,9 @@ fun ElegirJugarScreen(
     val hasPerfect1 = unlocked.contains("perfect_1")
     val hasPerfect5 = unlocked.contains("perfect_5")
 
-    var selectedContinent by remember { mutableStateOf("Europa") }
-    var selectedType by remember { mutableStateOf("NORMAL") }
-    var selectedQuestions by remember { mutableStateOf("10") }
+    var selectedContinent by remember { mutableStateOf(userPreferences.getLastContinent()) }
+    var selectedType by remember { mutableStateOf(userPreferences.getLastGameType()) }
+    var selectedQuestions by remember { mutableStateOf(userPreferences.getLastQuestions()) }
 
     val continents = listOf(
         Triple("Europa", "🏰", true) to "",
@@ -129,7 +129,12 @@ fun ElegirJugarScreen(
                         isSelected = selectedQuestions == id,
                         isUnlocked = isUnlocked,
                         unlockReq = req,
-                        onClick = { if (isUnlocked) selectedQuestions = id }
+                        onClick = {
+                            if (isUnlocked) {
+                                selectedQuestions = id
+                                userPreferences.setLastQuestions(id)
+                            }
+                        }
                     )
                 }
             }
@@ -156,7 +161,12 @@ fun ElegirJugarScreen(
                         isSelected = selectedType == id,
                         isUnlocked = isUnlocked,
                         unlockReq = req,
-                        onClick = { if (isUnlocked) selectedType = id }
+                        onClick = {
+                            if (isUnlocked) {
+                                selectedType = id
+                                userPreferences.setLastGameType(id)
+                            }
+                        }
                     )
                 }
             }
@@ -182,7 +192,12 @@ fun ElegirJugarScreen(
                         isSelected = selectedContinent == continent,
                         isUnlocked = isUnlocked,
                         unlockReq = req,
-                        onClick = { if (isUnlocked) selectedContinent = continent }
+                        onClick = {
+                            if (isUnlocked) {
+                                selectedContinent = continent
+                                userPreferences.setLastContinent(continent)
+                            }
+                        }
                     )
                 }
             }

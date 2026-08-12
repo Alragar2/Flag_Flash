@@ -1,6 +1,9 @@
 package alragar2.isi3.uv.flagflash.ranking
 
+import alragar2.isi3.uv.flagflash.R
 import alragar2.isi3.uv.flagflash.ShopRegistry
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -176,6 +179,14 @@ private fun PlayerRow(position: Int, player: Player) {
             Spacer(modifier = Modifier.width(8.dp))
             Text(player.name, fontWeight = FontWeight.Bold, color = TextPrimary, style = MaterialTheme.typography.bodyLarge)
         }
-        Text("⭐ ${player.score}", fontWeight = FontWeight.ExtraBold, color = DeepSkyBlue)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Image(
+                painter = painterResource(id = R.drawable.points),
+                contentDescription = null,
+                modifier = Modifier.size(18.dp)
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(player.score.toString(), fontWeight = FontWeight.ExtraBold, color = DeepSkyBlue)
+        }
     }
 }
